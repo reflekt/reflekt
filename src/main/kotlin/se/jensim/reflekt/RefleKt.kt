@@ -45,28 +45,31 @@ class RefleKt(conf: RefleKtConf) {
             .mapValues { it.value.map { it.second }.toSet() }
 
     private fun generateTransitiveSubClassMap(): Map<String, Set<String>> {
-        val transitiveSubClasses = mutableMapOf<String, Set<String>>()
-        classes.keys.forEach { c ->
-            transitiveSubClasses.computeIfAbsent(c) {
-                generateSequence(subclasses[it]) {
-                    val a = it.flatMap { transitiveSubClasses[it].orEmpty() }
-                    if (a.isEmpty()) null else a.toSet()
-                }.flatten().toSet()
+        fun getRecursiveSubClasses(canonicalNames: Set<String>): Set<String> {
+            if (canonicalNames.isEmpty()) {
+                return emptySet()
             }
+            val directsubclasses = canonicalNames.flatMap { subclasses[it].orEmpty() }.toSet()
+            return directsubclasses + getRecursiveSubClasses(directsubclasses)
         }
-        return transitiveSubClasses
+        return (superclasses.keys + superclasses.values.flatten()).map {
+            it to getRecursiveSubClasses(setOf(it))
+        }.toMap()
     }
 
     private fun getClass(canonicalName: String) = classes.computeIfAbsent(canonicalName) {
         javaClass.classLoader.loadClass(canonicalName)
     }
 
-    fun getTransitiveSuperClasses(canonicalName: String): Set<String> = transitiveSuperClasses.computeIfAbsent(canonicalName) {
-        generateSequence<Collection<String>>(superclasses[canonicalName].orEmpty()) {
-            val a = it.flatMap { getTransitiveSuperClasses(it) }.toSet()
-            if (a.isEmpty()) null else a
-        }.flatten().toSet()
-    }
+    fun getTransitiveSuperClasses(canonicalName: String): Set<String> =
+            if (transitiveSuperClasses.containsKey(canonicalName)) {
+                transitiveSuperClasses[canonicalName].orEmpty()
+            } else {
+                val deep = superclasses[canonicalName].orEmpty() + (superclasses[canonicalName]?.flatMap { getTransitiveSuperClasses(it) }?.toSet()
+                        ?: emptySet())
+                transitiveSuperClasses[canonicalName] = deep
+                deep
+            }
 
     fun getTransitiveAnnotations(canonicalName: String): Set<String> = transitiveAnnotations.computeIfAbsent(canonicalName) {
         getTransitiveSuperClasses(it)
@@ -74,7 +77,16 @@ class RefleKt(conf: RefleKtConf) {
                 .toSet() + annotations[canonicalName].orEmpty()
     }
 
-    fun getClassesAnnotatedWith(annotation:String):Set<String>{
-        TODO()
-    }
+    fun getClassesAnnotatedWith(annotation: String): Set<String> =
+            if (transitiveAnnotations.containsKey(annotation)) {
+                transitiveAnnotations[annotation]!!
+            } else {
+                val directlyAnnotated = annotations.filter { it.value.contains(annotation) }
+                        .map { it.key }.toSet()
+                 directlyAnnotated.flatMap{getSubClasses(it)}.toSet().also {
+                    transitiveAnnotations[annotation] = it
+                }
+            }
+
+    fun getSubClasses(canonicalName: String) = transitiveSubClasses[canonicalName].orEmpty()
 }
