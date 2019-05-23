@@ -12,11 +12,15 @@ repositories {
 }
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("com.github.jensim:reflektions:master-SNAPSHOT")
+    implementation("com.github.jensim:reflekt:0.0.3")
 
     testImplementation(kotlin("test-junit"))
     testImplementation("com.nhaarman:mockito-kotlin:1.6.0")
     testImplementation("org.hamcrest:hamcrest-library:2.1")
+}
+
+tasks.compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 application {
