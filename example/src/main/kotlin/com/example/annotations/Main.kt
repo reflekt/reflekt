@@ -1,7 +1,12 @@
 package com.example.annotations
 
-class Main
+class Main {
 
-fun main() {
-
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            println("Hello World!")
+        }
+    }
 }
+

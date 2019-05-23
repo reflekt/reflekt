@@ -1,10 +1,12 @@
 plugins {
     kotlin("jvm") version "1.3.31"
-    application
+    java
 }
 
 group = "com.example"
 version = findProperty("releaseVersion") ?: "DEV"
+
+val mainClass = "com.example.annotations.Main"
 
 repositories {
     mavenCentral()
@@ -23,6 +25,11 @@ tasks.compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-application {
-    mainClassName = "com.example.annotations.Main"
+val jar by tasks.getting(Jar::class) {
+    manifest {
+        attributes["Main-Class"] = mainClass
+    }
+    configurations["compileClasspath"].forEach { file: File ->
+        from(zipTree(file.absoluteFile))
+    }
 }
