@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "1.3.31"
     jacoco
     id("org.sonarqube") version "2.7.1"
+    `maven-publish`
 }
 
 group = "se.jensim.reflekt"
@@ -26,5 +27,11 @@ tasks.jacocoTestReport {
         xml.isEnabled = true
         csv.isEnabled = false
         html.destination = file("$buildDir/jacocoHtml")
+    }
+}
+
+publishing {
+    repositories {
+        mavenLocal()
     }
 }
