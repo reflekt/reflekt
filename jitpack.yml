@@ -1,4 +1,4 @@
 jdk:
   - oraclejdk8
 install:
-  - "./gradlew build publish"
+  - "./gradlew -PreleaseVersion=$GIT_BRANCH build publish"

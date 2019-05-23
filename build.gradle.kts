@@ -31,7 +31,19 @@ tasks.jacocoTestReport {
 }
 
 publishing {
-    repositories {
-        mavenLocal()
+    publications {
+        create<MavenPublication>("reflekt"){
+            pom {
+                name.set("RefleKt")
+                description.set("Like org.reflections, hoping it will be faster..")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+            }
+
+        }
     }
 }
