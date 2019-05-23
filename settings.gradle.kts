@@ -1,1 +1,1 @@
-rootProject.name = "RefleKt"
+rootProject.name = "reflekt"
