@@ -1,4 +1,5 @@
 jdk:
   - oraclejdk8
 install:
-  - "./gradlew -PreleaseVersion=$GIT_BRANCH build publish"
+  - "echo 'Building version $GIT_BRANCH'"
+  - "./gradlew -PreleaseVersion=$GIT_BRANCH build publishToMavenLocal"
