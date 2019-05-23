@@ -71,12 +71,6 @@ class RefleKt(conf: RefleKtConf) {
                 deep
             }
 
-    fun getTransitiveAnnotations(canonicalName: String): Set<String> = transitiveAnnotations.computeIfAbsent(canonicalName) {
-        getTransitiveSuperClasses(it)
-                .flatMap { annotations[it].orEmpty() }
-                .toSet() + annotations[canonicalName].orEmpty()
-    }
-
     fun getClassesAnnotatedWith(annotation: String): Set<String> =
             if (transitiveAnnotations.containsKey(annotation)) {
                 transitiveAnnotations[annotation]!!

@@ -14,21 +14,6 @@ class RefleKtTest {
         })
     }
 
-    @Test
-    fun `transitive annotations`() {
-        val annotations = target.getTransitiveAnnotations(TestLeafClass::class.java.canonicalName)
-
-        println(annotations)
-        val expected = setOf(
-                OneAnnotation::class,
-                TwoAnnotation::class,
-                ThreeAnnotation::class,
-                Metadata::class)
-                .map { it.java.canonicalName }.toSet()
-
-        assertThat(annotations, equalTo(expected))
-    }
-
     @org.junit.Test
     fun `classes annotated with`() {
 
