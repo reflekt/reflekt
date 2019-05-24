@@ -1,11 +1,12 @@
 package se.jensim.reflekt
 
+import se.jensim.reflekt.internal.getClassFileLocators
+import se.jensim.reflekt.internal.packageFilter
+
 class RefleKt(conf: RefleKtConf) {
 
-    private val classFileLocator: List<ClassFileLocator> = conf.classFileLocators.toList()
-    private val packageFilter: (String) -> Boolean = { className ->
-        conf.packageFilter?.let { className.startsWith(it) } ?: true
-    }
+    private val classFileLocator = conf.getClassFileLocators()
+    private val packageFilter = conf.packageFilter()
 
     private val classes = mutableMapOf<String, Class<*>>()
     private val superclasses = mutableMapOf<String, Set<String>>()
@@ -16,6 +17,7 @@ class RefleKt(conf: RefleKtConf) {
     private val transitiveSubClasses: Map<String, Set<String>>
 
     constructor(confDsl: RefleKtConf.() -> Unit) : this(RefleKtConf().apply(confDsl))
+    constructor():this(RefleKtConf())
 
     init {
         val classes = getAllClassNames()
@@ -77,7 +79,7 @@ class RefleKt(conf: RefleKtConf) {
             } else {
                 val directlyAnnotated = annotations.filter { it.value.contains(annotation) }
                         .map { it.key }.toSet()
-                 directlyAnnotated.flatMap{getSubClasses(it)}.toSet().also {
+                directlyAnnotated.flatMap { getSubClasses(it) }.toSet().also {
                     transitiveAnnotations[annotation] = it
                 }
             }

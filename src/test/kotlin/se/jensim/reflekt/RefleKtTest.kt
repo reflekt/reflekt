@@ -8,13 +8,18 @@ import kotlin.test.Test
 
 class RefleKtTest {
 
-    val target = RefleKt {
-        classFileLocators = mutableListOf(mock {
-            on { getClasses() } doReturn setOf(TestLeafClass::class.java.canonicalName)
-        })
+    private val target = RefleKt {
+        classFileLocatorConf{
+            extraClassFileLocator.add(
+                    mock {
+                        on { getClasses() } doReturn setOf(TestLeafClass::class.java.canonicalName)
+                    }
+            )
+            disableAllDefaultClassFileLocators = true
+        }
     }
 
-    @org.junit.Test
+    @Test
     fun `classes annotated with`() {
 
         val annotatedClasses = target.getClassesAnnotatedWith(ThreeAnnotation::class.java.canonicalName)

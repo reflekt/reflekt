@@ -1,6 +1,8 @@
 package se.jensim.reflekt.internal
 
 import se.jensim.reflekt.ClassFileLocator
+import se.jensim.reflekt.classRegexp
+import se.jensim.reflekt.fileToClassRef
 import java.io.File
 
 internal class ClassFileLocatorImpl : ClassFileLocator {
@@ -8,28 +10,35 @@ internal class ClassFileLocatorImpl : ClassFileLocator {
     private val classLoader = Thread.currentThread().contextClassLoader
 
     override fun getClasses(): Set<String> {
-        val files = File(classLoader.getResource("./").toURI())
-        val allClassFiles = visit(listOf(files))
+        val rootUris = classLoader.getResources("./").toList().map { it.toURI() }
+        val files = rootUris.map { File(it) }.map { FileWithRoot(it,it) }
+        val allClassFiles = visit(files)
         return allClassFiles.filterAndRenameAsClassRefs()
     }
 
-    private tailrec fun visit(files: List<File>, classFiles: List<File> = emptyList()): List<File> {
-        val subs: List<File> = files.filter { it.isDirectory }.flatMap { it.listFiles().toList() }
-        val foundClassFiles = files.filter { it.isClassFile() }
+    private tailrec fun visit(files: List<FileWithRoot>, classFiles: List<FileWithRoot> = emptyList()): List<FileWithRoot> {
+        val subs: List<FileWithRoot> = files.subFiles()
+        val foundClassFiles = files.filter { it.file.isClassFile() }
         if (subs.isEmpty()) {
             return classFiles + foundClassFiles
         }
         return visit(subs, classFiles + foundClassFiles)
     }
 
-    private fun File.isClassFile() = isFile
-            && toURI().toString().matches(Regex("^.*/[A-Z]+[A-Za-z0-9]*\\.class$"))
+    private fun File.isClassFile() = isFile &&
+            toURI().toString().matches(classRegexp)
 
-    private fun List<File>.filterAndRenameAsClassRefs(): Set<String> {
-        val dirName = classLoader.getResource("./").toURI().toString()
-        val dirNameLength = dirName.length
+
+    private fun List<FileWithRoot>.subFiles(): List<FileWithRoot> = filter { it.file.isDirectory }
+            .flatMap { a -> a.file.listFiles().map { FileWithRoot(a.root, it) } }
+
+    private fun List<FileWithRoot>.filterAndRenameAsClassRefs(): Set<String> {
         return map {
-            it.toURI().toString().drop(dirNameLength).dropLast(6).replace("/", ".")
+            it.file.toURI().toString()
+                    .drop(it.root.toURI().toString().length)
+                    .fileToClassRef()
         }.toSet()
     }
+
+    data class FileWithRoot(val root: File, val file: File)
 }

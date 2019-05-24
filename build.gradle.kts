@@ -1,3 +1,6 @@
+import groovy.util.Node
+import groovy.xml.QName
+
 plugins {
     kotlin("jvm") version "1.3.31"
     jacoco
@@ -14,8 +17,6 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
-
-    implementation("org.javassist:javassist:3.25.0-GA")
 
     testImplementation(kotlin("test-junit"))
     testImplementation("com.nhaarman:mockito-kotlin:1.6.0")
@@ -41,6 +42,20 @@ publishing {
                     license {
                         name.set("The Apache License, Version 2.0")
                         url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                withXml{
+                    val maybe = asNode().getAt(QName.valueOf("dependencies"))
+                    val deps = if(maybe.isEmpty()){
+                        asNode().appendNode("dependencies")
+                    }else{
+                        maybe[0]
+                    } as Node
+                    listOf("kotlin-reflect", "kotlin-stdlib-jdk8").forEach{
+                        val dependencyNode = deps.appendNode("dependency")
+                        dependencyNode.appendNode("groupId", "org.jetbrains.kotlin")
+                        dependencyNode.appendNode("artifactId", it)
+                        dependencyNode.appendNode("version", "1.3.31")
                     }
                 }
             }
