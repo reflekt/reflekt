@@ -33,6 +33,7 @@ tasks.jacocoTestReport {
 publishing {
     publications {
         create<MavenPublication>("reflekt"){
+            artifact(tasks.jar.orNull?.outputs?.files?.singleFile)
             pom {
                 name.set("RefleKt")
                 description.set("Like org.reflections, hoping it will be faster..")

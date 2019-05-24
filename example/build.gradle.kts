@@ -10,11 +10,12 @@ val mainClass = "com.example.annotations.Main"
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven("https://jitpack.io")
 }
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("com.github.jensim:reflekt:0.0.3")
+    implementation("se.jensim.reflekt:reflekt:DEV")
 
     testImplementation(kotlin("test-junit"))
     testImplementation("com.nhaarman:mockito-kotlin:1.6.0")
