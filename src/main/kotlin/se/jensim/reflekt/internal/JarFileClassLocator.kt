@@ -30,10 +30,18 @@ internal class JarFileClassLocator : ClassFileLocator {
 
             val newClasses = jarFileEntries.map { it.name }.filter { it.matches(classRegexp) }
             val jars = jarFileEntries.filter { !it.isDirectory && it.name.endsWith(".jar") }
-                    .mapNotNull { zipFile.getInputStream(it) }.map { ZipInputStream(it) }
-            val nextLevel = jars.flatMap { it.use { generateSequence { it.nextEntry }.toList() } }
+                    .map { ZipInputStream(zipFile.getInputStream(it)) }
+                    .flatMap { it.getEntries() }
 
-            return getClassFiles(zipFile, foundClassFiles + newClasses, nextLevel)
+            return getClassFiles(zipFile, foundClassFiles + newClasses, jars)
+        }
+
+        private fun ZipInputStream.getEntries():List<ZipEntry> = try{
+            use {
+                generateSequence { it.nextEntry }.toList()
+            }
+        }catch (e:Exception){
+            emptyList()
         }
     }
 
