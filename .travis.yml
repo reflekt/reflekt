@@ -9,4 +9,6 @@ addons:
 
 install: false
 
-script: "./gradlew build jacocoTestReport sonarqube --stacktrace"
+script:
+  - "./gradlew build jacocoTestReport sonarqube publishToMavenLocal --stacktrace"
+  - "./verify_example.sh"
