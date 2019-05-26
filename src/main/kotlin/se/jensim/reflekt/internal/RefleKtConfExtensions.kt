@@ -6,13 +6,8 @@ import se.jensim.reflekt.RefleKtConf
 internal fun RefleKtConf.getClassFileLocators(): List<ClassFileLocator> =
         classFileLocatorConf.extraClassFileLocator.apply {
             if (!classFileLocatorConf.disableAllDefaultClassFileLocators) {
-                if (classFileLocatorConf.classPathClassFileLocator) {
-                    add(ClassFileLocatorImpl())
-                    add(JarFileClassLocator())
-                }
-                if (classFileLocatorConf.deepJarClassFileLocator) {
-                    System.err.println("Not implemented")
-                }
+                add(ClassFileLocatorImpl)
+                add(JarFileClassLocator)
             }
         }
 

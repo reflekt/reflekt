@@ -8,41 +8,38 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
 
-internal class JarFileClassLocator : ClassFileLocator {
+object JarFileClassLocator : ClassFileLocator {
 
-    companion object {
+    private val classFiles: Set<String> by lazy {
+        JarFileClassLocator::class.java.protectionDomain.codeSource
+                ?.let { ZipFile(File(it.location.toURI())) }
+                ?.let { getClasses(it) }
+                .orEmpty()
+    }
 
-        private val classFiles: Set<String> by lazy {
-            JarFileClassLocator::class.java.protectionDomain.codeSource
-                    ?.let { ZipFile(File(it.location.toURI())) }
-                    ?.let { getClasses(it) }
-                    .orEmpty()
+    fun getClasses(jarFile: ZipFile): Set<String> =
+            getClassFiles(jarFile, emptySet(), jarFile.entries()?.toList().orEmpty())
+                    .map { it.fileToClassRef() }.toSet()
+
+    private tailrec fun getClassFiles(zipFile: ZipFile, foundClassFiles: Set<String>, jarFileEntries: Collection<ZipEntry>): Set<String> {
+        if (jarFileEntries.isEmpty()) {
+            return foundClassFiles
         }
 
-        fun getClasses(jarFile: ZipFile): Set<String> =
-                getClassFiles(jarFile, emptySet(), jarFile.entries()?.toList().orEmpty())
-                        .map { it.fileToClassRef() }.toSet()
+        val newClasses = jarFileEntries.map { it.name }.filter { it.matches(classRegexp) }
+        val jars = jarFileEntries.filter { !it.isDirectory && it.name.endsWith(".jar") }
+                .map { ZipInputStream(zipFile.getInputStream(it)) }
+                .flatMap { it.getEntries() }
 
-        private tailrec fun getClassFiles(zipFile: ZipFile, foundClassFiles: Set<String>, jarFileEntries: Collection<ZipEntry>): Set<String> {
-            if (jarFileEntries.isEmpty()) {
-                return foundClassFiles
-            }
+        return getClassFiles(zipFile, foundClassFiles + newClasses, jars)
+    }
 
-            val newClasses = jarFileEntries.map { it.name }.filter { it.matches(classRegexp) }
-            val jars = jarFileEntries.filter { !it.isDirectory && it.name.endsWith(".jar") }
-                    .map { ZipInputStream(zipFile.getInputStream(it)) }
-                    .flatMap { it.getEntries() }
-
-            return getClassFiles(zipFile, foundClassFiles + newClasses, jars)
+    private fun ZipInputStream.getEntries(): List<ZipEntry> = try {
+        use {
+            generateSequence { it.nextEntry }.toList()
         }
-
-        private fun ZipInputStream.getEntries():List<ZipEntry> = try{
-            use {
-                generateSequence { it.nextEntry }.toList()
-            }
-        }catch (e:Exception){
-            emptyList()
-        }
+    } catch (e: Exception) {
+        emptyList()
     }
 
     override fun getClasses(): Set<String> = classFiles

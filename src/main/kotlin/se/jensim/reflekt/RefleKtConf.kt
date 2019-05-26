@@ -11,8 +11,6 @@ class RefleKtConf {
 
     class ClassFileLocatorConf {
         var disableAllDefaultClassFileLocators = false
-        var classPathClassFileLocator = true
-        var deepJarClassFileLocator = false
         val extraClassFileLocator = mutableListOf<ClassFileLocator>()
     }
 }
