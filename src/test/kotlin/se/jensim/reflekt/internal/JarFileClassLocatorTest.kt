@@ -24,7 +24,7 @@ class JarFileClassLocatorTest {
         val nestedJarData = File(tmpDir.root, "nested.jar").readBytes()
         writeToZip("nested.jar", "${tmpDir.root}/outer.jar", nestedJarData)
 
-        val classes = JarFileClassLocator.getClassFiles(ZipFile(File("${tmpDir.root}/outer.jar")))
+        val classes = JarFileClassLocator.getClasses(ZipFile(File("${tmpDir.root}/outer.jar")))
 
         assertEquals(classes, setOf("com.example.FindMe"))
     }

@@ -15,12 +15,12 @@ internal class JarFileClassLocator : ClassFileLocator {
         private val classFiles: Set<String> by lazy {
             JarFileClassLocator::class.java.protectionDomain.codeSource
                     ?.let { ZipFile(File(it.location.toURI())) }
-                    ?.let { getClassFiles(it) }
+                    ?.let { getClasses(it) }
                     .orEmpty()
         }
 
-        fun getClassFiles(zipFile: ZipFile): Set<String> =
-                getClassFiles(zipFile, emptySet(), zipFile.entries()?.toList().orEmpty())
+        fun getClasses(jarFile: ZipFile): Set<String> =
+                getClassFiles(jarFile, emptySet(), jarFile.entries()?.toList().orEmpty())
                         .map { it.fileToClassRef() }.toSet()
 
         private tailrec fun getClassFiles(zipFile: ZipFile, foundClassFiles: Set<String>, jarFileEntries: Collection<ZipEntry>): Set<String> {
@@ -31,7 +31,7 @@ internal class JarFileClassLocator : ClassFileLocator {
             val newClasses = jarFileEntries.map { it.name }.filter { it.matches(classRegexp) }
             val jars = jarFileEntries.filter { !it.isDirectory && it.name.endsWith(".jar") }
                     .mapNotNull { zipFile.getInputStream(it) }.map { ZipInputStream(it) }
-            val nextLevel = jars.flatMap { generateSequence { it.nextEntry }.toList() }
+            val nextLevel = jars.flatMap { it.use { generateSequence { it.nextEntry }.toList() } }
 
             return getClassFiles(zipFile, foundClassFiles + newClasses, nextLevel)
         }
