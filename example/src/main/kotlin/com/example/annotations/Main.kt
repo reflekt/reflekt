@@ -16,7 +16,8 @@ class Main {
             if(a.equals(setOf(LeafClass::class.java.canonicalName))){
                 println("Correct!")
             }else{
-                throw RuntimeException("Bad result. $a")
+                System.err.println("Bad result. $a")
+                java.lang.System.exit(1)
             }
         }
     }
