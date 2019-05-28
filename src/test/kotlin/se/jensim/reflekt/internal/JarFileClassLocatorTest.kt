@@ -10,7 +10,7 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
 
-class JarFileClassLocatorTest {
+internal class JarFileClassLocatorTest {
 
     @Rule
     @JvmField

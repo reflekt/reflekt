@@ -4,80 +4,70 @@ import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.assertThat
+import java.lang.annotation.Inherited
+import kotlin.annotation.AnnotationTarget.CLASS
 import kotlin.test.Test
 
-class RefleKtTest {
+internal class RefleKtTest {
 
-    private val target = RefleKt {
-        classFileLocatorConf{
-            extraClassFileLocator.add(
-                    mock {
-                        on { getClasses() } doReturn setOf(TestLeafClass::class.java.canonicalName)
-                    }
-            )
-            disableAllDefaultClassFileLocators = true
-        }
-    }
+    private val target = RefleKt ()
 
     @Test
     fun `classes annotated with`() {
+        val annotatedClasses = target.getClassesAnnotatedWith(ThreeAnnotation::class.java)
 
-        val annotatedClasses = target.getClassesAnnotatedWith(ThreeAnnotation::class.java.canonicalName)
-
-        val expected = setOf(
-                TestInterface::class,
-                TestSuperDuperClass::class,
-                TestSuperClass::class,
-                TestLeafClass::class)
-                .map { it.java.canonicalName }.toSet()
+        val expected: Set<Class<*>> = setOf(TestSuperInterface::class)
+                .map { it.java }.toSet()
         assertThat(annotatedClasses, equalTo(expected))
     }
 
     @Test
-    fun `transitive super classes`() {
-        val superClasses = target.getTransitiveSuperClasses(TestLeafClass::class.java.canonicalName)
+    fun `inherited annotation`() {
+        val annotatedClasses = target.getClassesAnnotatedWith(TwoAnnotationWithInheritance::class.java)
 
-        val expected = setOf(
-                TestSuperInterface::class,
-                TestInterface::class,
+        val expected: Set<Class<*>> = setOf(
                 TestSuperDuperClass::class,
                 TestSuperClass::class,
-                java.lang.Object::class)
-                .map { it.java.canonicalName }.toSet()
-        assertThat(superClasses, equalTo(expected))
+                TestLeafClass::class)
+                .map { it.java }.toSet()
+        assertThat(annotatedClasses, equalTo(expected))
     }
 
     @Test
     fun `transitive subclasses`() {
-        val superClasses = target.getSubClasses(TestSuperInterface::class.java.canonicalName)
+        val superClasses = target.getSubClasses(TestSuperInterface::class.java)
 
-        val expected = setOf(
+        val expected: Set<Class<*>> = setOf(
                 TestInterface::class,
                 TestSuperDuperClass::class,
                 TestSuperClass::class,
                 TestLeafClass::class)
-                .map { it.java.canonicalName }.toSet()
+                .map { it.java }.toSet()
         assertThat(superClasses, equalTo(expected))
     }
 }
 
-@TwoAnnotation
-annotation class OneAnnotation
+@Target(CLASS)
+internal annotation class OneAnnotation
 
 @OneAnnotation
-class TestLeafClass : TestSuperClass()
-
-annotation class TwoAnnotation
+internal class TestLeafClass : TestSuperClass()
 
 @OneAnnotation
-open class TestSuperClass : TestSuperDuperClass()
+internal abstract class TestSuperClass : TestSuperDuperClass()
 
-abstract class TestSuperDuperClass : TestInterface
+@TwoAnnotationWithInheritance
+internal abstract class TestSuperDuperClass : TestInterface
 
-interface TestInterface : TestSuperInterface
+internal interface TestInterface : TestSuperInterface
 
 @ThreeAnnotation
-interface TestSuperInterface
+internal interface TestSuperInterface
 
-annotation class ThreeAnnotation
+@Inherited
+@Target(CLASS)
+internal annotation class TwoAnnotationWithInheritance
+
+@Target(CLASS)
+internal annotation class ThreeAnnotation
 

@@ -1,88 +1,39 @@
 package se.jensim.reflekt
 
+import se.jensim.reflekt.internal.ReflektStore.annotatedClasses
+import se.jensim.reflekt.internal.ReflektStore.getClasses
+import se.jensim.reflekt.internal.ReflektStore.superClasses
 import se.jensim.reflekt.internal.getClassFileLocators
 import se.jensim.reflekt.internal.packageFilter
+import java.util.concurrent.ConcurrentHashMap
 
 class RefleKt(conf: RefleKtConf) {
 
-    private val classFileLocator = conf.getClassFileLocators()
+    private val classFileLocators = conf.getClassFileLocators()
     private val packageFilter = conf.packageFilter()
 
-    private val classes = mutableMapOf<String, Class<*>>()
-    private val superclasses = mutableMapOf<String, Set<String>>()
-    private val annotations = mutableMapOf<String, Collection<String>>()
-    private val transitiveSuperClasses = mutableMapOf<String, Set<String>>()
-    private val transitiveAnnotations = mutableMapOf<String, Set<String>>()
-    private val subclasses: Map<String, Set<String>>
-    private val transitiveSubClasses: Map<String, Set<String>>
-
     constructor(confDsl: RefleKtConf.() -> Unit) : this(RefleKtConf().apply(confDsl))
-    constructor():this(RefleKtConf())
+    constructor() : this(RefleKtConf())
 
-    init {
-        val classes = getAllClassNames()
-                .filter(packageFilter)
-                .map { getClass(it) }
-        travelUpwards(classes)
-        subclasses = generateSubClassMap()
-        transitiveSubClasses = generateTransitiveSubClassMap()
+    private val allClasses = classFileLocators.flatMap { it.getClasses() }
+    private val filteredClasses = allClasses.filter(packageFilter).toSet()
+    private val filteredClassRefs = getClasses(filteredClasses)
+    private val subclassStore: MutableMap<Class<*>, Set<Class<*>>> = ConcurrentHashMap()
+
+    fun getClassesAnnotatedWith(annotation: Class<*>): Set<Class<*>> = annotatedClasses(annotation)
+
+    fun getSubClasses(clazz: Class<*>): Set<Class<*>> = subclassStore.computeIfAbsent(clazz) {
+        filteredClassRefs.filter { isSubClassesOf(clazz, listOf(it)) }.toSet()
     }
 
-    private fun getAllClassNames(): Collection<String> = classFileLocator.flatMap { it.getClasses() }
-
-    private tailrec fun travelUpwards(classes: Collection<Class<*>>) {
-        classes.forEach { clazz ->
-            annotations.computeIfAbsent(clazz.canonicalName) { clazz.annotations.map { it.annotationClass.qualifiedName!! } }
-            superclasses.computeIfAbsent(clazz.canonicalName) { (clazz.interfaces + clazz.superclass).mapNotNull { it?.canonicalName }.toSet() }
+    private tailrec fun isSubClassesOf(clazz: Class<*>, lookingAt: List<Class<*>>): Boolean {
+        if (lookingAt.isEmpty()) {
+            return false
         }
-        val next = classes.flatMap { (it.interfaces + it.superclass).filterNotNull().toList() }.toSet()
-        if (next.isNotEmpty()) {
-            travelUpwards(next)
+        val withSupers = lookingAt.map { superClasses(it) }
+        if (withSupers.any { it.contains(clazz) }) {
+            return true
         }
+        return isSubClassesOf(clazz, withSupers.flatten())
     }
-
-    private fun generateSubClassMap(): Map<String, Set<String>> = superclasses
-            .flatMap { (k, v) -> v.map { it to k } }
-            .groupBy { it.first }
-            .mapValues { it.value.map { it.second }.toSet() }
-
-    private fun generateTransitiveSubClassMap(): Map<String, Set<String>> {
-        fun getRecursiveSubClasses(canonicalNames: Set<String>): Set<String> {
-            if (canonicalNames.isEmpty()) {
-                return emptySet()
-            }
-            val directsubclasses = canonicalNames.flatMap { subclasses[it].orEmpty() }.toSet()
-            return directsubclasses + getRecursiveSubClasses(directsubclasses)
-        }
-        return (superclasses.keys + superclasses.values.flatten()).map {
-            it to getRecursiveSubClasses(setOf(it))
-        }.toMap()
-    }
-
-    private fun getClass(canonicalName: String) = classes.computeIfAbsent(canonicalName) {
-        javaClass.classLoader.loadClass(canonicalName)
-    }
-
-    fun getTransitiveSuperClasses(canonicalName: String): Set<String> =
-            if (transitiveSuperClasses.containsKey(canonicalName)) {
-                transitiveSuperClasses[canonicalName].orEmpty()
-            } else {
-                val deep = superclasses[canonicalName].orEmpty() + (superclasses[canonicalName]?.flatMap { getTransitiveSuperClasses(it) }?.toSet()
-                        ?: emptySet())
-                transitiveSuperClasses[canonicalName] = deep
-                deep
-            }
-
-    fun getClassesAnnotatedWith(annotation: String): Set<String> =
-            if (transitiveAnnotations.containsKey(annotation)) {
-                transitiveAnnotations[annotation]!!
-            } else {
-                val directlyAnnotated = annotations.filter { it.value.contains(annotation) }
-                        .map { it.key }.toSet()
-                directlyAnnotated.flatMap { getSubClasses(it) }.toSet().also {
-                    transitiveAnnotations[annotation] = it
-                }
-            }
-
-    fun getSubClasses(canonicalName: String) = transitiveSubClasses[canonicalName].orEmpty()
 }

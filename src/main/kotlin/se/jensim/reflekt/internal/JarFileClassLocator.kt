@@ -8,16 +8,19 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
 
-object JarFileClassLocator : ClassFileLocator {
+internal object JarFileClassLocator : ClassFileLocator() {
 
     private val classFiles: Set<String> by lazy {
-        JarFileClassLocator::class.java.protectionDomain.codeSource
-                ?.let { ZipFile(File(it.location.toURI())) }
+        JarFileClassLocator::class.java.protectionDomain.codeSource?.location?.toURI()
+                ?.let { if (it.toString().endsWith(".jar")) ZipFile(File(it)) else {
+                    println(it)
+                    null
+                } }
                 ?.let { getClasses(it) }
                 .orEmpty()
     }
 
-    fun getClasses(jarFile: ZipFile): Set<String> =
+    internal fun getClasses(jarFile: ZipFile): Set<String> =
             getClassFiles(jarFile, emptySet(), jarFile.entries()?.toList().orEmpty())
                     .map { it.fileToClassRef() }.toSet()
 

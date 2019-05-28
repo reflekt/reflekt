@@ -6,7 +6,7 @@ import se.jensim.reflekt.fileToClassRef
 import java.io.File
 import java.util.zip.ZipFile
 
-object ClassFileLocatorImpl : ClassFileLocator {
+internal object ClassFileLocatorImpl : ClassFileLocator() {
 
     private val stickyClasses: Set<String> by lazy {
         val rootUris = Thread.currentThread().contextClassLoader

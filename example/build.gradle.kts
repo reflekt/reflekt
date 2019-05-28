@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.3.31"
     java
+    id("com.github.johnrengelman.shadow") version "5.0.0"
 }
 
 group = "com.example"
@@ -11,11 +12,11 @@ val mainClass = "com.example.annotations.Main"
 repositories {
     mavenCentral()
     mavenLocal()
-    maven("https://jitpack.io")
 }
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("se.jensim.reflekt:reflekt:DEV")
+    implementation("org.reflections:reflections:0.9.11")
 
     testImplementation(kotlin("test-junit"))
     testImplementation("com.nhaarman:mockito-kotlin:1.6.0")
@@ -26,11 +27,9 @@ tasks.compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-val jar by tasks.getting(Jar::class) {
+tasks.shadowJar {
+    minimize()
     manifest {
         attributes["Main-Class"] = mainClass
-    }
-    configurations["compileClasspath"].forEach { file: File ->
-        from(zipTree(file.absoluteFile))
     }
 }

@@ -11,6 +11,6 @@ internal fun RefleKtConf.getClassFileLocators(): List<ClassFileLocator> =
             }
         }
 
-internal fun RefleKtConf.packageFilter():(String)->Boolean = { className ->
-    packageFilter.let { className.startsWith(it) }
+internal fun RefleKtConf.packageFilter():(String)->Boolean = { c ->
+    packageFilter.let { c.startsWith(it) }
 }

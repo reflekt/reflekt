@@ -1,8 +1,8 @@
 package se.jensim.reflekt
 
-interface ClassFileLocator {
+abstract class ClassFileLocator {
 
-    fun getClasses(): Set<String>
+    internal abstract fun getClasses(): Set<String>
 }
 
 internal val classRegexp = Regex("^.*/([A-Z]+[A-Za-z0-9]${"$"})*[A-Z]+[A-Za-z0-9]*\\.class$")

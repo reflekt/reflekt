@@ -6,6 +6,7 @@ plugins {
     jacoco
     id("org.sonarqube") version "2.7.1"
     `maven-publish`
+    signing
 }
 
 group = "se.jensim.reflekt"
@@ -43,6 +44,24 @@ publishing {
                         name.set("The Apache License, Version 2.0")
                         url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
                     }
+                }
+                developers {
+                    developer {
+                        name.set("jensim")
+                    }
+                }
+                organization {
+                    name.set("${project.group}")
+                    url.set("https://github.com/jensim/refleKt")
+                }
+                issueManagement {
+                    system.set("GitHub")
+                    url.set("https://github.com/jensim/refleKt/issues")
+                }
+                scm {
+                    url.set("https://github.com/jensim/refleKt")
+                    connection.set("scm:git:git://github.com:jensim/refleKt.git")
+                    developerConnection.set("scm:git:ssh://git@github.com:jensim/refleKt.git")
                 }
                 withXml{
                     val maybe = asNode().getAt(QName.valueOf("dependencies"))

@@ -3,7 +3,7 @@ package se.jensim.reflekt.internal
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class ClassFileLocatorImplTest {
+internal class ClassFileLocatorImplTest {
 
     @Test
     fun getClasses() {
