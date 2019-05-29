@@ -7,51 +7,24 @@ class Main {
 
     companion object {
 
-        inline fun timed(named: String? = null, action: () -> Unit) {
+        inline fun timed(named: String? = null, action: () -> BenchmarkReflect): Pair<BenchmarkReflect, Long> {
             val start = System.currentTimeMillis()
-            action()
+            val ref = action()
             val stop = System.currentTimeMillis()
-            val ref = named?.let { " [$it]" } ?: ""
-            if (named != null) {
-                println("Action$ref took ${stop - start} ms executing")
-            }
+            return ref to stop - start
         }
 
-        private var pkgScope: String? = null
+        private var pkgScope: String = "null"
 
         private val jobs = mapOf(
                 "org.reflections" to {
                     timed("org.reflections") {
-                        //val r = Reflections("com.example.annotations")
-                        val r = pkgScope?.let { Reflections(it) } ?: Reflections()
-                        val a = r.getSubTypesOf(SuperClass::class.java)
-                        val b = r.getSubTypesOf(SuperClass2::class.java)
-                        val ok = if (a == setOf(LeafClass::class.java)) {
-                            b == setOf(LeafClass::class.java, SuperClass::class.java)
-                        } else {
-                            false
-                        }
-                        if (!ok) {
-                            System.err.println("org.reflections failed!")
-                        }
+                        OrgReflectionsBenchmark(pkgScope)
                     }
                 },
                 "reflekt" to {
                     timed("RefleKt") {
-                        //val r = RefleKt { packageFilter = "com.example.annotations" }
-                        val r = pkgScope?.let { RefleKt { packageFilter = it } } ?: RefleKt()
-                        val a = r.getSubClasses(SuperClass::class.java)
-                        val b = r.getSubClasses(SuperClass2::class.java)
-
-                        val ok = if (a == setOf(LeafClass::class.java)) {
-                            b == setOf(LeafClass::class.java, SuperClass::class.java)
-                        } else {
-                            false
-                        }
-                        if (!ok) {
-                            System.err.println("reflekt failed! a=$a b=$b")
-                        }
-
+                        RefleKtBenchmark(pkgScope)
                     }
                 }
         )
@@ -59,18 +32,66 @@ class Main {
         @JvmStatic
         fun main(args: Array<String>) {
             val iterations = args[0].toInt()
-            pkgScope = if (args[1] == "null") null else args[1]
-            val jobs = args.drop(2).map { it to jobs[it] }.toMap()
-            println("Running $iterations iterations on same jvm with package limit to \"$pkgScope\" ${jobs.keys}!")
-            repeat(iterations) {
-                jobs.forEach { (name, job) ->
-                    job?.invoke() ?: System.err.println("Job $name is not defined")
+            pkgScope = args[1]
+            val jobNamePadLength = jobs.keys.maxBy { it.length }?.length ?: 10
+            val jobs = args.drop(2).map { it to jobs[it] }
+            println("Running $iterations iterations on same jvm with package limit to \"$pkgScope\" ${this.jobs.keys}!")
+            jobs.forEach { (name, jobConstructor) ->
+                val (job, initTime) = jobConstructor!!.invoke()
+                val results = (1..iterations).map {
+                    benchMark(job)
                 }
+                val jobName = name.padEnd(jobNamePadLength, ' ')
+                println("[$jobName] Init=${initTime}ms Max=${results.max()}ms Min=${results.min()}ms, Avg=${results.average().roundTo(2)}ms")
             }
         }
+
+        fun benchMark(impl: BenchmarkReflect): Long {
+            val start = System.currentTimeMillis()
+            val a = impl.getSubClassesOf(SuperClass::class.java)
+            val b = impl.getSubClassesOf(SuperClass2::class.java)
+
+            val timeTaken = System.currentTimeMillis() - start
+
+            val ok = if (a == setOf(LeafClass::class.java)) {
+                b == setOf(LeafClass::class.java, SuperClass::class.java)
+            } else {
+                false
+            }
+            if (!ok) {
+                System.err.println("${impl.name} failed! a=$a b=$b")
+                System.exit(1)
+            }
+            return timeTaken
+        }
+
+        private fun Double.roundTo(decimals: Int = 2): Double =
+            times(10 * decimals).toLong().div(10.0 * decimals)
+
     }
 }
 
 class LeafClass : SuperClass()
 abstract class SuperClass : SuperClass2()
 abstract class SuperClass2
+
+abstract class BenchmarkReflect(pkgScope: String) {
+    val pkg = if (pkgScope == "null") null else pkgScope
+    abstract val name: String
+    abstract fun getSubClassesOf(clazz: Class<*>): Set<Class<*>>
+    abstract fun getAnnotatedWith(clazz: Class<out Annotation>): Set<Class<*>>
+}
+
+class RefleKtBenchmark(pkgScope: String) : BenchmarkReflect(pkgScope) {
+    override val name = "RefleKt"
+    private val refleKt = this.pkg?.let { RefleKt { packageFilter = it } } ?: RefleKt()
+    override fun getSubClassesOf(clazz: Class<*>): Set<Class<*>> = refleKt.getSubClasses(clazz)
+    override fun getAnnotatedWith(clazz: Class<out Annotation>): Set<Class<*>> = refleKt.getClassesAnnotatedWith(clazz)
+}
+
+class OrgReflectionsBenchmark(pkgScope: String) : BenchmarkReflect(pkgScope) {
+    override val name: String = "org.reflections"
+    private val reflections = this.pkg?.let { Reflections(it) } ?: Reflections()
+    override fun getSubClassesOf(clazz: Class<*>): Set<Class<*>> = reflections.getSubTypesOf(clazz)
+    override fun getAnnotatedWith(clazz: Class<out Annotation>): Set<Class<*>> = reflections.getTypesAnnotatedWith(clazz)
+}
