@@ -50,6 +50,7 @@ class Main {
             val start = System.currentTimeMillis()
             val a = impl.getSubClassesOf(SuperClass::class.java)
             val b = impl.getSubClassesOf(SuperClass2::class.java)
+            val c = impl.getSubClassesOf(Object::class.java)
 
             val timeTaken = System.currentTimeMillis() - start
 

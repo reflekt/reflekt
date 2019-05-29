@@ -10,7 +10,7 @@ internal class ClassFileLocatorImplTest {
         // given
 
         // when
-        val classes = ClassFileLocatorImpl.getClasses()
+        val classes = ClassFileLocatorImpl.getClasses(false)
         println(classes)
 
         // then

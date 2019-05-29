@@ -11,6 +11,7 @@ class RefleKtConf {
 
     class ClassFileLocatorConf {
         var disableAllDefaultClassFileLocators = false
+        var includeNestedJars = false
         val extraClassFileLocator = mutableListOf<ClassFileLocator>()
     }
 }

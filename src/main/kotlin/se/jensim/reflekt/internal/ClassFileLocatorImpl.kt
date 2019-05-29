@@ -4,32 +4,38 @@ import se.jensim.reflekt.ClassFileLocator
 import se.jensim.reflekt.classRegexp
 import se.jensim.reflekt.fileToClassRef
 import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 import java.util.zip.ZipFile
 
 internal object ClassFileLocatorImpl : ClassFileLocator() {
 
-    private val stickyClasses: Set<String> by lazy {
+    private val stickyClasses = ConcurrentHashMap<Boolean, Set<String>>()
+    private fun stickyClasses(includeNestedJars: Boolean): Set<String> = stickyClasses.computeIfAbsent(includeNestedJars) {
         val rootUris = Thread.currentThread().contextClassLoader
                 .getResources("./").toList().map { it.toURI() }
         val files = rootUris.map { File(it) }.map { FileWithRoot(it, it) }
-        visit(files)
+        visit(files = files, includeNestedJars = includeNestedJars)
                 .map { it.getClassName() }
                 .toSet()
     }
 
-    override fun getClasses(): Set<String> = stickyClasses
+    override fun getClasses(includeNestedJars: Boolean): Set<String> = stickyClasses(includeNestedJars)
 
-    private tailrec fun visit(files: List<FileWithRoot>, classFiles: List<ClassFile> = emptyList()): List<ClassFile> {
+    private tailrec fun visit(files: List<FileWithRoot>, classFiles: List<ClassFile> = emptyList(), includeNestedJars: Boolean): List<ClassFile> {
         val subs: List<FileWithRoot> = files.subFiles()
         val foundClassFiles = files.filter { it.file.isClassFile() }
-        val classesFromJar = files.filter { it.file.name.endsWith("jar") }
-                .map { ZipFile(it.file) }
-                .flatMap { JarFileClassLocator.getClasses(it).map { ClassWithoutFile(it) } }
+        val classesFromJar = if (includeNestedJars) {
+            files.filter { it.file.name.endsWith("jar") }
+                    .map { ZipFile(it.file) }
+                    .flatMap { JarFileClassLocator.getClasses(it, includeNestedJars).map { ClassWithoutFile(it) } }
+        } else {
+            emptyList()
+        }
         val sum = classFiles + foundClassFiles + classesFromJar
         if (subs.isEmpty()) {
             return sum
         }
-        return visit(subs, sum)
+        return visit(subs, sum, includeNestedJars)
     }
 
     private fun File.isClassFile() = isFile &&

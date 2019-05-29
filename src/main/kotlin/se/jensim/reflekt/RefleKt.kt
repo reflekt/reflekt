@@ -15,7 +15,7 @@ class RefleKt(conf: RefleKtConf) {
     constructor(confDsl: RefleKtConf.() -> Unit) : this(RefleKtConf().apply(confDsl))
     constructor() : this(RefleKtConf())
 
-    private val allClasses = classFileLocators.flatMap { it.getClasses() }
+    private val allClasses = classFileLocators.flatMap { it.getClasses(conf.classFileLocatorConf.includeNestedJars) }
     private val filteredClasses = allClasses.filter(packageFilter).toSet()
     private val filteredClassRefs = getClasses(filteredClasses)
     private val subclassStore: MutableMap<Class<*>, Set<Class<*>>> = ConcurrentHashMap()
