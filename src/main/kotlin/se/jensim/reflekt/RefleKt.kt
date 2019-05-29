@@ -20,7 +20,7 @@ class RefleKt(conf: RefleKtConf) {
     private val filteredClassRefs = getClasses(filteredClasses)
     private val subclassStore: MutableMap<Class<*>, Set<Class<*>>> = ConcurrentHashMap()
 
-    fun getClassesAnnotatedWith(annotation: Class<*>): Set<Class<*>> = annotatedClasses(annotation)
+    fun getClassesAnnotatedWith(annotation: Class<out Annotation>): Set<Class<*>> = annotatedClasses(annotation)
 
     fun getSubClasses(clazz: Class<*>): Set<Class<*>> = subclassStore.computeIfAbsent(clazz) {
         filteredClassRefs.filter { isSubClassesOf(clazz, listOf(it)) }.toSet()

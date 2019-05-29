@@ -31,7 +31,7 @@ object ReflektStore {
                 (clazz.interfaces + clazz.superclass).filterNotNull().toSet()
             }
 
-    fun annotatedClasses(annotation: Class<*>): Set<Class<*>> = annotations.computeIfAbsent(annotation.canonicalName) {
+    fun annotatedClasses(annotation: Class<out Annotation>): Set<Class<*>> = annotations.computeIfAbsent(annotation.canonicalName) {
         classes.values.filterNotNull()
                 .filter { it.annotations.any { it.annotationClass.qualifiedName == annotation.canonicalName } }
                 .toSet()
