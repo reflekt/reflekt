@@ -6,7 +6,6 @@ plugins {
     jacoco
     id("org.sonarqube") version "2.7.1"
     `maven-publish`
-    signing
 }
 
 group = "se.jensim.reflekt"
@@ -48,6 +47,7 @@ publishing {
                 developers {
                     developer {
                         name.set("jensim")
+                        url.set("https://github.com/jensim")
                     }
                 }
                 organization {
