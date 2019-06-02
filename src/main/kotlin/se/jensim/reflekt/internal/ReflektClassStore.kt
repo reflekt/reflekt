@@ -4,7 +4,10 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.stream.Collectors
 
-object ReflektStore {
+/**
+ * Responsible for resolving and loading classes
+ */
+internal object ReflektClassStore {
 
     private val classFuse = AtomicBoolean(false)
     private val classes: MutableMap<String, Class<*>?> = ConcurrentHashMap()

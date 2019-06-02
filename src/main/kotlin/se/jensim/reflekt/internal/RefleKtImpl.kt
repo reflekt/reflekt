@@ -1,8 +1,8 @@
-package se.jensim.reflekt
+package se.jensim.reflekt.internal
 
-import se.jensim.reflekt.internal.ReflektStore.getClasses
-import se.jensim.reflekt.internal.getClassFileLocators
-import se.jensim.reflekt.internal.packageFilter
+import se.jensim.reflekt.RefleKt
+import se.jensim.reflekt.RefleKtConf
+import se.jensim.reflekt.internal.ReflektClassStore.getClasses
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field
 import java.lang.reflect.Member
@@ -10,7 +10,7 @@ import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Predicate
 
-internal class RefleKtImpl(conf: RefleKtConf):RefleKt {
+internal class RefleKtImpl(conf: RefleKtConf) : RefleKt {
 
     private val classFileLocators = conf.getClassFileLocators()
     private val packageFilter = conf.packageFilter()

@@ -6,11 +6,11 @@ import se.jensim.reflekt.RefleKtConf
 internal fun RefleKtConf.getClassFileLocators(): List<ClassFileLocator> =
         classFileLocatorConf.extraClassFileLocator.apply {
             if (!classFileLocatorConf.disableAllDefaultClassFileLocators) {
-                add(ClassFileLocatorImpl)
+                add(ClassPathClassFileLocator)
                 add(JarFileClassLocator)
             }
         }
 
-internal fun RefleKtConf.packageFilter():(String)->Boolean = { c ->
+internal fun RefleKtConf.packageFilter(): (String) -> Boolean = { c ->
     packageFilter.let { c.startsWith(it) }
 }

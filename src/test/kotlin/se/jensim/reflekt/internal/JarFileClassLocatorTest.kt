@@ -28,12 +28,10 @@ internal class JarFileClassLocatorTest {
 
     @Test
     fun getClassFileFromNestedJar() {
-        val classes = JarFileClassLocator.getClasses(ZipFile(File("${tmpDir.root}/outer.jar")),true )
+        val classes = JarFileClassLocator.getClasses(ZipFile(File("${tmpDir.root}/outer.jar")), true)
 
-        assertEquals(classes, setOf("com.example.FindMe"))
+        assertEquals(classes.toSet(), setOf("com.example.FindMe"))
     }
-
-
 
     private fun writeToZip(entryName: String, zipFile: String, data: ByteArray) {
         ZipOutputStream(FileOutputStream(File(zipFile))).use {

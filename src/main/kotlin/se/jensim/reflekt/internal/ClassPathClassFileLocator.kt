@@ -7,7 +7,7 @@ import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import java.util.zip.ZipFile
 
-internal object ClassFileLocatorImpl : ClassFileLocator() {
+internal object ClassPathClassFileLocator : ClassFileLocator() {
 
     private val stickyClasses = ConcurrentHashMap<Boolean, Set<String>>()
     private fun stickyClasses(includeNestedJars: Boolean): Set<String> = stickyClasses.computeIfAbsent(includeNestedJars) {

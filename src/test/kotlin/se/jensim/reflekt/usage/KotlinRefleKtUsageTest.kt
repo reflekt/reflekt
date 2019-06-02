@@ -9,6 +9,5 @@ class KotlinRefleKtUsageTest {
     @Test
     fun `use reflekt`() {
         assertNotEquals(refleKt.getAllTypes(), emptySet())
-
     }
 }

@@ -15,9 +15,8 @@ internal object JarFileClassLocator : ClassFileLocator() {
 
     private val classFiles = ConcurrentHashMap<Boolean, Set<String>>()
 
-    private fun getClassesFromSelfJar(includeNestedJars: Boolean): Set<String> {
-        val start = System.currentTimeMillis()
-        val classes = JarFileClassLocator::class.java.protectionDomain.codeSource?.location?.toURI()
+    private fun getClassesFromSelfJar(includeNestedJars: Boolean): Set<String> =
+            JarFileClassLocator::class.java.protectionDomain.codeSource?.location?.toURI()
                 ?.let {
                     if (it.toString().endsWith(".jar")) ZipFile(File(it)) else {
                         println(it)
@@ -25,10 +24,7 @@ internal object JarFileClassLocator : ClassFileLocator() {
                     }
                 }
                 ?.let { getClasses(it, includeNestedJars) }
-                .orEmpty()
-        //println("Read ${classes.size} jar-file classes in ${System.currentTimeMillis() - start}ms")
-        return classes.toSet()
-    }
+                .orEmpty().toSet()
 
     internal fun getClasses(jarFile: ZipFile, includeNestedJars: Boolean): Collection<String> {
         val jarFileEntries = jarFile.entries()?.toList().orEmpty()

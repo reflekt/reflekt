@@ -1,4 +1,4 @@
-package se.jensim.reflekt
+package se.jensim.reflekt.internal
 
 import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.assertThat
@@ -8,7 +8,7 @@ import kotlin.test.Test
 
 internal class RefleKtImplTest {
 
-    private val target = RefleKtImpl ()
+    private val target = RefleKtImpl()
 
     @Test
     fun `classes annotated with`() {
