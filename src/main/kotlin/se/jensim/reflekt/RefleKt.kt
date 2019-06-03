@@ -2,12 +2,16 @@ package se.jensim.reflekt
 
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field
-import java.lang.reflect.Member
 import java.lang.reflect.Method
 import java.util.function.Predicate
 
+/**
+ * Copied the methods from org.reflections, but droped the getFieldUsage, getMethodUsage and getConstructorUsage,
+ * due to unwanted complexity.
+ */
 interface RefleKt {
 
+    fun getAllTypes(): Set<String>
     fun getClassesAnnotatedWith(annotation: Class<out Annotation>): Set<Class<*>>
     fun getSubClasses(clazz: Class<*>): Set<Class<*>>
     fun getMethodsAnnotatedWith(annotation: Class<out Annotation>): Set<Method>
@@ -21,8 +25,9 @@ interface RefleKt {
     fun getResources(predicate: Predicate<String>): Set<String>
     fun getMethodParamNames(method: Method): List<String>
     fun getConstructorParamNames(constructor: Constructor<*>): List<String>
-    fun getFieldUsage(field: Field): Set<Member>
-    fun getMethodUsage(method: Method): Set<Member>
-    fun getConstructorUsage(constructor: Constructor<*>): Set<Member>
-    fun getAllTypes(): Set<String>
+
+    // Wont implement at this time.
+    // fun getFieldUsage(field: Field): Set<Member>
+    // fun getMethodUsage(method: Method): Set<Member>
+    // fun getConstructorUsage(constructor: Constructor<*>): Set<Member>
 }

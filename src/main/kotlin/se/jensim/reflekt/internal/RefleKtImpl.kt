@@ -5,7 +5,6 @@ import se.jensim.reflekt.RefleKtConf
 import se.jensim.reflekt.internal.ReflektClassStore.getClasses
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field
-import java.lang.reflect.Member
 import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Predicate
@@ -21,10 +20,34 @@ internal class RefleKtImpl(conf: RefleKtConf) : RefleKt {
     private val allClasses by lazy { classFileLocators.flatMap { it.getClasses(conf.classFileLocatorConf.includeNestedJars) } }
     private val filteredClasses by lazy { allClasses.filter(packageFilter).toSet() }
     private val filteredClassRefs by lazy { getClasses(filteredClasses) }
+    private val methods by lazy { filteredClassRefs.flatMap { it.declaredMethods.toList() }.toSet() }
+    private val constructors by lazy { filteredClassRefs.flatMap { it.constructors.toList() }.toSet() }
+    private val fields by lazy { filteredClassRefs.flatMap { it.declaredFields.toList() }.toSet() }
+
+    /**
+     * Parent to its children
+     */
     private val subclassStore: MutableMap<Class<*>, Set<Class<*>>> = ConcurrentHashMap()
+    /**
+     * Child to parents (superclass + interfaces)
+     */
     private val superclasses: MutableMap<String, Set<Class<*>>> = ConcurrentHashMap()
+    /**
+     * Annotation to classes
+     */
     private val classAnnotations: MutableMap<String, Set<Class<*>>> = ConcurrentHashMap()
+    /**
+     * Annotation to methods
+     */
     private val methodAnnotations: MutableMap<String, Set<Method>> = ConcurrentHashMap()
+    /**
+     * Annotation to constructors
+     */
+    private val constructorAnnotations: MutableMap<String, Set<Constructor<*>>> = ConcurrentHashMap()
+    /**
+     * Annotation to field
+     */
+    private val fieldAnnotations: MutableMap<String, Set<Field>> = ConcurrentHashMap()
 
     override fun getAllTypes(): Set<String> = filteredClasses
 
@@ -63,17 +86,33 @@ internal class RefleKtImpl(conf: RefleKtConf) : RefleKt {
                 .toSet()
     }
 
-    override fun getMethodsMatchParams(vararg paramClasses: Class<*>): Set<Method> = TODO()
-    override fun getMethodsReturn(clazz: Class<*>): Set<Method> = TODO()
-    override fun getMethodsWithAnyParamAnnotated(annotation: Class<out Annotation>): Set<Method> = TODO()
-    override fun getConstructorsAnnotatedWith(annotation: Class<out Annotation>): Set<Constructor<*>> = TODO()
-    override fun getConstructorsMatchParams(vararg paramClasses: Class<*>): Set<Constructor<*>> = TODO()
-    override fun getConstructorsWithAnyParamAnnotated(annotation: Class<out Annotation>): Set<Constructor<*>> = TODO()
-    override fun getFieldsAnnotatedWith(annotation: Class<out Annotation>): Set<Field> = TODO()
-    override fun getResources(predicate: Predicate<String>): Set<String> = TODO()
-    override fun getMethodParamNames(method: Method): List<String> = TODO()
-    override fun getConstructorParamNames(constructor: Constructor<*>): List<String> = TODO()
-    override fun getFieldUsage(field: Field): Set<Member> = TODO()
-    override fun getMethodUsage(method: Method): Set<Member> = TODO()
-    override fun getConstructorUsage(constructor: Constructor<*>): Set<Member> = TODO()
+    override fun getMethodsMatchParams(vararg paramClasses: Class<*>): Set<Method> = paramClasses.toList().let { params ->
+        methods.filter { it.parameters.map { it::class } == params }
+    }.toSet()
+
+    override fun getMethodsReturn(clazz: Class<*>): Set<Method> = methods.filter { it.returnType == clazz }.toSet()
+
+    override fun getMethodsWithAnyParamAnnotated(annotation: Class<out Annotation>): Set<Method> = methods.filter {
+        it.parameters.any { it.isAnnotationPresent(annotation) }
+    }.toSet()
+
+    override fun getConstructorsAnnotatedWith(annotation: Class<out Annotation>): Set<Constructor<*>> = constructorAnnotations.computeIfAbsent(annotation.canonicalName) {
+        constructors.filter { it.isAnnotationPresent(annotation) }.toSet()
+    }
+
+    override fun getConstructorsMatchParams(vararg paramClasses: Class<*>): Set<Constructor<*>> = paramClasses.toList().let { params ->
+        constructors.filter { it.parameters.map { it::class } == params }
+    }.toSet()
+
+    override fun getConstructorsWithAnyParamAnnotated(annotation: Class<out Annotation>): Set<Constructor<*>> = constructors.filter {
+        it.parameters.any { it.isAnnotationPresent(annotation) }
+    }.toSet()
+
+    override fun getFieldsAnnotatedWith(annotation: Class<out Annotation>): Set<Field> = fieldAnnotations.computeIfAbsent(annotation.canonicalName) {
+        fields.filter { it.isAnnotationPresent(annotation) }.toSet()
+    }
+
+    override fun getResources(predicate: Predicate<String>): Set<String> = TODO("Not yet implemented")
+    override fun getMethodParamNames(method: Method): List<String> = method.parameters.map { it.name }
+    override fun getConstructorParamNames(constructor: Constructor<*>): List<String> = constructor.parameters.map { it.name }
 }
