@@ -7,7 +7,6 @@ import java.lang.reflect.Constructor
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
-import java.util.function.Predicate
 
 internal class RefleKtImpl(conf: RefleKtConf) : RefleKt {
 
@@ -82,13 +81,12 @@ internal class RefleKtImpl(conf: RefleKtConf) : RefleKt {
     override fun getMethodsAnnotatedWith(annotation: Class<out Annotation>): Set<Method> = methodAnnotations.computeIfAbsent(annotation.canonicalName) {
         filteredClassRefs
                 .flatMap { it.methods.toList() }
-                .filter { it.annotations.any { it::class.java == annotation } }
+                .filter { it.isAnnotationPresent(annotation) }
                 .toSet()
     }
 
-    override fun getMethodsMatchParams(vararg paramClasses: Class<*>): Set<Method> = paramClasses.toList().let { params ->
-        methods.filter { it.parameters.map { it::class } == params }
-    }.toSet()
+    override fun getMethodsMatchParams(vararg paramClasses: Class<*>): Set<Method> =
+            methods.filter { it.parameterTypes?.contentEquals(paramClasses) == true }.toSet()
 
     override fun getMethodsReturn(clazz: Class<*>): Set<Method> = methods.filter { it.returnType == clazz }.toSet()
 
@@ -100,9 +98,8 @@ internal class RefleKtImpl(conf: RefleKtConf) : RefleKt {
         constructors.filter { it.isAnnotationPresent(annotation) }.toSet()
     }
 
-    override fun getConstructorsMatchParams(vararg paramClasses: Class<*>): Set<Constructor<*>> = paramClasses.toList().let { params ->
-        constructors.filter { it.parameters.map { it::class } == params }
-    }.toSet()
+    override fun getConstructorsMatchParams(vararg paramClasses: Class<*>): Set<Constructor<*>> =
+        constructors.filter { it.parameterTypes?.contentEquals(paramClasses) == true }.toSet()
 
     override fun getConstructorsWithAnyParamAnnotated(annotation: Class<out Annotation>): Set<Constructor<*>> = constructors.filter {
         it.parameters.any { it.isAnnotationPresent(annotation) }
@@ -111,8 +108,4 @@ internal class RefleKtImpl(conf: RefleKtConf) : RefleKt {
     override fun getFieldsAnnotatedWith(annotation: Class<out Annotation>): Set<Field> = fieldAnnotations.computeIfAbsent(annotation.canonicalName) {
         fields.filter { it.isAnnotationPresent(annotation) }.toSet()
     }
-
-    override fun getResources(predicate: Predicate<String>): Set<String> = TODO("Not yet implemented")
-    override fun getMethodParamNames(method: Method): List<String> = method.parameters.map { it.name }
-    override fun getConstructorParamNames(constructor: Constructor<*>): List<String> = constructor.parameters.map { it.name }
 }

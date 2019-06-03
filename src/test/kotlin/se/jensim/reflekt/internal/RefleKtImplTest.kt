@@ -15,7 +15,6 @@ import java.lang.annotation.Inherited
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field
 import java.lang.reflect.Method
-import java.util.function.Predicate
 import kotlin.annotation.AnnotationTarget.CLASS
 import kotlin.annotation.AnnotationTarget.CONSTRUCTOR
 import kotlin.annotation.AnnotationTarget.FIELD
@@ -112,24 +111,6 @@ internal class RefleKtImplTest {
     fun `test getFieldsAnnotatedWith`() {
         val result: Set<Field> = target.getFieldsAnnotatedWith(InternalFieldAnnotation::class.java)
         assertEquals(result, setOf(TestLeafClass::aFieldToFind.javaField))
-    }
-
-    @Test
-    fun `test getResources`() {
-        val predicate: Predicate<String> = TODO()
-        val result: Set<String> = target.getResources(predicate)
-    }
-
-    @Test
-    fun `test getMethodParamNames`() {
-        val result: List<String> = target.getMethodParamNames(TestLeafClass::asdf.javaMethod!!)
-        assertEquals(result, listOf("hello"))
-    }
-
-    @Test
-    fun `test getConstructorParamNames`() {
-        val result: List<String> = target.getConstructorParamNames(TestLeafClass::class.constructors.first().javaConstructor!!)
-        assertEquals(result, listOf("param"))
     }
 
     @Test
