@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 public class ClassFileLocatorJarTest {
 
-    private final ClassFileLocatorJar target = new ClassFileLocatorJar(packageFilter);
+    private final ClassFileLocatorJar target = new ClassFileLocatorJar("se.jensim.reflekt");
 
     @Test
     public void getClasses() {

@@ -10,7 +10,7 @@ import static org.junit.Assert.fail;
 
 public class ClassFileLocatorClassPathTest {
 
-    private final ClassFileLocatorClassPath target = new ClassFileLocatorClassPath(packageFilter);
+    private final ClassFileLocatorClassPath target = new ClassFileLocatorClassPath("se.jensim.reflekt");
 
     @Test
     public void getClasses() {
@@ -18,7 +18,6 @@ public class ClassFileLocatorClassPathTest {
 
         // when
         Set<String> classes = target.getClasses(true);
-        fail("Not yet implemented");
 
         // then
         assertThat(classes, is(not(empty())));
