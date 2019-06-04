@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-echo "Building RefleKt"
-./gradlew assemble publishToMavenLocal --stacktrace
-cd example
+mvn clean install -DskipTests
+cd example/benchmark
 ./test.sh
