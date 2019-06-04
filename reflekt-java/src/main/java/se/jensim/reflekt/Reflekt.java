@@ -1,6 +1,7 @@
 package se.jensim.reflekt;
 
-public interface Reflekt extends ReflektAllTypes,
+public interface Reflekt extends
+        ReflektAllTypes,
         ReflektClassesAnnotatedWith,
         ReflektConstructorsAnnotatedWith,
         ReflektConstructorsMatchParams,

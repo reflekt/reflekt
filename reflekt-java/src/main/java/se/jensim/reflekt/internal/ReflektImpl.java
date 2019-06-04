@@ -1,8 +1,6 @@
 package se.jensim.reflekt.internal;
 
-import se.jensim.reflekt.Reflekt;
-import se.jensim.reflekt.ReflektAllTypes;
-import se.jensim.reflekt.ReflektClassesAnnotatedWith;
+import se.jensim.reflekt.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -12,8 +10,43 @@ import java.util.Set;
 
 class ReflektImpl implements Reflekt {
 
-    private final ReflektAllTypes reflektAllTypes = new ReflektAllTypesImpl();
-    private final ReflektClassesAnnotatedWith reflektClassesAnnotatedWith = new ReflektClassesAnnotatedWithImpl();
+    private final ReflektAllTypes reflektAllTypes;
+    private final ReflektClassesAnnotatedWith reflektClassesAnnotatedWith;
+    private final ReflektConstructorsAnnotatedWith reflektConstructorsAnnotatedWith;
+    private final ReflektConstructorsMatchParams reflektConstructorsMatchParams;
+    private final ReflektConstructorsWithAnyParamAnnotated reflektConstructorsWithAnyParamAnnotated;
+    private final ReflektFieldsAnnotatedWith reflektFieldsAnnotatedWith;
+    private final ReflektMethodsAnnotatedWith reflektMethodsAnnotatedWith;
+    private final ReflektMethodsMatchParams reflektMethodsMatchParams;
+    private final ReflektMethodsReturn reflektMethodsReturn;
+    private final ReflektMethodsWithAnyParamAnnotated reflektMethodsWithAnyParamAnnotated;
+    private final ReflektSubClasses reflektSubClasses;
+
+    ReflektImpl(
+            ReflektAllTypes reflektAllTypes,
+            ReflektClassesAnnotatedWith reflektClassesAnnotatedWith,
+            ReflektConstructorsAnnotatedWith reflektConstructorsAnnotatedWith,
+            ReflektConstructorsMatchParams reflektConstructorsMatchParams,
+            ReflektConstructorsWithAnyParamAnnotated reflektConstructorsWithAnyParamAnnotated,
+            ReflektFieldsAnnotatedWith reflektFieldsAnnotatedWith,
+            ReflektMethodsAnnotatedWith reflektMethodsAnnotatedWith,
+            ReflektMethodsMatchParams reflektMethodsMatchParams,
+            ReflektMethodsReturn reflektMethodsReturn,
+            ReflektMethodsWithAnyParamAnnotated reflektMethodsWithAnyParamAnnotated,
+            ReflektSubClasses reflektSubClasses) {
+
+        this.reflektAllTypes = reflektAllTypes;
+        this.reflektClassesAnnotatedWith = reflektClassesAnnotatedWith;
+        this.reflektConstructorsAnnotatedWith = reflektConstructorsAnnotatedWith;
+        this.reflektConstructorsMatchParams = reflektConstructorsMatchParams;
+        this.reflektConstructorsWithAnyParamAnnotated = reflektConstructorsWithAnyParamAnnotated;
+        this.reflektFieldsAnnotatedWith = reflektFieldsAnnotatedWith;
+        this.reflektMethodsAnnotatedWith = reflektMethodsAnnotatedWith;
+        this.reflektMethodsMatchParams = reflektMethodsMatchParams;
+        this.reflektMethodsReturn = reflektMethodsReturn;
+        this.reflektMethodsWithAnyParamAnnotated = reflektMethodsWithAnyParamAnnotated;
+        this.reflektSubClasses = reflektSubClasses;
+    }
 
     @Override
     public Set<String> getAllTypes() {
@@ -27,46 +60,46 @@ class ReflektImpl implements Reflekt {
 
     @Override
     public Set<Constructor> getConstructorsAnnotatedWith(Class<Annotation> annotation) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return reflektConstructorsAnnotatedWith.getConstructorsAnnotatedWith(annotation);
     }
 
     @Override
     public Set<Constructor> getConstructorsMatchParams(Class... paramClasses) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return reflektConstructorsMatchParams.getConstructorsMatchParams(paramClasses);
     }
 
     @Override
     public Set<Constructor> getConstructorsWithAnyParamAnnotated(Class<Annotation> annotation) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return reflektConstructorsWithAnyParamAnnotated.getConstructorsWithAnyParamAnnotated(annotation);
     }
 
     @Override
     public Set<Field> getFieldsAnnotatedWith(Class<Annotation> annotation) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return reflektFieldsAnnotatedWith.getFieldsAnnotatedWith(annotation);
     }
 
     @Override
     public Set<Method> getMethodsAnnotatedWith(Class<Annotation> annotation) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return reflektMethodsAnnotatedWith.getMethodsAnnotatedWith(annotation);
     }
 
     @Override
     public Set<Method> getMethodsMatchParams(Class... paramClasses) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return reflektMethodsMatchParams.getMethodsMatchParams(paramClasses);
     }
 
     @Override
     public Set<Method> getMethodsReturn(Class clazz) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return reflektMethodsReturn.getMethodsReturn(clazz);
     }
 
     @Override
     public Set<Method> getMethodsWithAnyParamAnnotated(Class<Annotation> annotation) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return reflektMethodsWithAnyParamAnnotated.getMethodsWithAnyParamAnnotated(annotation);
     }
 
     @Override
     public Set<Class> getSubClasses(Class clazz) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return reflektSubClasses.getSubClasses(clazz);
     }
 }
