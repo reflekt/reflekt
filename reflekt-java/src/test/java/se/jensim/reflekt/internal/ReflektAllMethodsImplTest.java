@@ -4,12 +4,10 @@ import org.junit.Test;
 import se.jensim.reflekt.ReflektAllMethods;
 
 import java.lang.reflect.Method;
-import java.util.Set;
 
 import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.toSet;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,6 +27,6 @@ public class ReflektAllMethodsImplTest {
                 .collect(toSet());
 
         // then
-        assertThat(fields, equalTo(Set.of("testGetAllMethods")));
+        assertTrue(fields.contains("testGetAllMethods"));
     }
 }

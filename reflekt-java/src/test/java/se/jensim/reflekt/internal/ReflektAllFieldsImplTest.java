@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 
 public class ReflektAllFieldsImplTest {
 
+    public String aStringToFind = "Find me!";
     private ReflektAllClasses m = mock(ReflektAllClasses.class);
     private final ReflektAllFields target = new ReflektAllFieldsImpl(m);
 
@@ -29,6 +30,6 @@ public class ReflektAllFieldsImplTest {
                 .collect(toSet());
 
         // then
-        assertThat(fields, equalTo(Set.of("target", "m")));
+        assertThat(fields, equalTo(Set.of("aStringToFind")));
     }
 }

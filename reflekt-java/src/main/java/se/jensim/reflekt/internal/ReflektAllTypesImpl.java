@@ -23,7 +23,7 @@ class ReflektAllTypesImpl implements ReflektAllTypes {
 
     @Override
     public Set<String> getAllTypes() {
-        return keeper.computeIfAbsent(true, b -> initialize());
+        return keeper.computeIfAbsent(false, b -> initialize());
     }
 
     private Set<String> initialize() {
