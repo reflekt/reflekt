@@ -6,5 +6,5 @@ import java.util.Set;
 
 public interface ReflektConstructorsAnnotatedWith {
 
-    Set<Constructor> getConstructorsAnnotatedWith(Class<Annotation> annotation);
+    Set<Constructor> getConstructorsAnnotatedWith(Class<? extends Annotation> annotation);
 }

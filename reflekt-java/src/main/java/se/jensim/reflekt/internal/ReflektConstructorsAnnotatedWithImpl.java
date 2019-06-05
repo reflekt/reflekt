@@ -21,7 +21,7 @@ class ReflektConstructorsAnnotatedWithImpl implements ReflektConstructorsAnnotat
     }
 
     @Override
-    public Set<Constructor> getConstructorsAnnotatedWith(Class<Annotation> annotation) {
+    public Set<Constructor> getConstructorsAnnotatedWith(Class<? extends Annotation> annotation) {
         return keeper.computeIfAbsent(false,b -> init())
                 .getOrDefault(annotation.getCanonicalName(), defaultValue);
     }
