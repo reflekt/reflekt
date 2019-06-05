@@ -97,19 +97,19 @@ class ReflektImpl implements Reflekt {
     }
 
     @Override
-    public Set<Constructor> getConstructorsWithAnyParamAnnotated(Class<Annotation> annotation) {
+    public Set<Constructor> getConstructorsWithAnyParamAnnotated(Class<? extends Annotation> annotation) {
         Objects.requireNonNull(annotation);
         return reflektConstructorsWithAnyParamAnnotated.getConstructorsWithAnyParamAnnotated(annotation);
     }
 
     @Override
-    public Set<Field> getFieldsAnnotatedWith(Class<Annotation> annotation) {
+    public Set<Field> getFieldsAnnotatedWith(Class<? extends Annotation> annotation) {
         Objects.requireNonNull(annotation);
         return reflektFieldsAnnotatedWith.getFieldsAnnotatedWith(annotation);
     }
 
     @Override
-    public Set<Method> getMethodsAnnotatedWith(Class<Annotation> annotation) {
+    public Set<Method> getMethodsAnnotatedWith(Class<? extends Annotation> annotation) {
         Objects.requireNonNull(annotation);
         return reflektMethodsAnnotatedWith.getMethodsAnnotatedWith(annotation);
     }
@@ -127,7 +127,7 @@ class ReflektImpl implements Reflekt {
     }
 
     @Override
-    public Set<Method> getMethodsWithAnyParamAnnotated(Class<Annotation> annotation) {
+    public Set<Method> getMethodsWithAnyParamAnnotated(Class<? extends Annotation> annotation) {
         Objects.requireNonNull(annotation);
         return reflektMethodsWithAnyParamAnnotated.getMethodsWithAnyParamAnnotated(annotation);
     }

@@ -21,7 +21,7 @@ class ReflektFieldsAnnotatedWithImpl implements ReflektFieldsAnnotatedWith {
     }
 
     @Override
-    public Set<Field> getFieldsAnnotatedWith(Class<Annotation> annotation) {
+    public Set<Field> getFieldsAnnotatedWith(Class<? extends Annotation> annotation) {
         return keeper.computeIfAbsent(false, b->init())
                 .getOrDefault(annotation.getCanonicalName(), defaultValue);
     }

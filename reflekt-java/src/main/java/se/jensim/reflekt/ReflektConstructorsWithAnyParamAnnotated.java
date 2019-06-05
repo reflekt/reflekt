@@ -6,5 +6,5 @@ import java.util.Set;
 
 public interface ReflektConstructorsWithAnyParamAnnotated {
 
-    Set<Constructor> getConstructorsWithAnyParamAnnotated(Class<Annotation> annotation);
+    Set<Constructor> getConstructorsWithAnyParamAnnotated(Class<? extends Annotation> annotation);
 }

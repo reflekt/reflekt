@@ -6,5 +6,5 @@ import java.util.Set;
 
 public interface ReflektMethodsWithAnyParamAnnotated {
 
-    Set<Method> getMethodsWithAnyParamAnnotated(Class<Annotation> annotation);
+    Set<Method> getMethodsWithAnyParamAnnotated(Class<? extends Annotation> annotation);
 }

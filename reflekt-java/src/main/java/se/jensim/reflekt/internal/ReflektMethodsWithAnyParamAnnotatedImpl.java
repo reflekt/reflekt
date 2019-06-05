@@ -21,7 +21,7 @@ class ReflektMethodsWithAnyParamAnnotatedImpl implements ReflektMethodsWithAnyPa
     }
 
     @Override
-    public Set<Method> getMethodsWithAnyParamAnnotated(Class<Annotation> annotation) {
+    public Set<Method> getMethodsWithAnyParamAnnotated(Class<? extends Annotation> annotation) {
         return keeper.computeIfAbsent(false, b -> init())
                 .getOrDefault(annotation.getCanonicalName(), defaultValue);
     }

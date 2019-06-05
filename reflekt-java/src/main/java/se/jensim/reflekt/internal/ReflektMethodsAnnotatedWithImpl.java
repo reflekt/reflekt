@@ -21,7 +21,7 @@ class ReflektMethodsAnnotatedWithImpl implements ReflektMethodsAnnotatedWith {
     }
 
     @Override
-    public Set<Method> getMethodsAnnotatedWith(Class<Annotation> annotation) {
+    public Set<Method> getMethodsAnnotatedWith(Class<? extends Annotation> annotation) {
         return keeper.computeIfAbsent(false, b -> init())
                 .getOrDefault(annotation.getCanonicalName(), defaultValue);
     }

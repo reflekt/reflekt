@@ -6,5 +6,5 @@ import java.util.Set;
 
 public interface ReflektFieldsAnnotatedWith {
 
-    Set<Field> getFieldsAnnotatedWith(Class<Annotation> annotation);
+    Set<Field> getFieldsAnnotatedWith(Class<? extends Annotation> annotation);
 }

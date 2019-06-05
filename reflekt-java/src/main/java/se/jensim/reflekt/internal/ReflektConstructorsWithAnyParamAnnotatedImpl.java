@@ -21,7 +21,7 @@ class ReflektConstructorsWithAnyParamAnnotatedImpl implements ReflektConstructor
     }
 
     @Override
-    public Set<Constructor> getConstructorsWithAnyParamAnnotated(Class<Annotation> annotation) {
+    public Set<Constructor> getConstructorsWithAnyParamAnnotated(Class<? extends Annotation> annotation) {
         return keeper.computeIfAbsent(false, b -> init()).getOrDefault(annotation.getCanonicalName(), defaultValue);
     }
 
