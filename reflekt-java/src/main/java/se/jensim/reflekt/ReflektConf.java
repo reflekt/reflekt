@@ -1,13 +1,19 @@
 package se.jensim.reflekt;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 public class ReflektConf {
 
     private final String packageFilter;
     private final boolean includeNestedJars;
+    private final List<ClassFileLocator> extraClassFileLocators;
 
     private ReflektConf(Builder builder) {
         packageFilter = builder.packageFilter;
         includeNestedJars = builder.includeNestedJars;
+        extraClassFileLocators = builder.extraClassFileLocators;
     }
 
     public static Builder builder() {
@@ -28,10 +34,18 @@ public class ReflektConf {
         return includeNestedJars;
     }
 
+    /**
+     * Want to implement your own class file locator, pass it in the conf.
+     */
+    public List<ClassFileLocator> getExtraClassFileLocators() {
+        return extraClassFileLocators;
+    }
+
     public static class Builder {
 
         private String packageFilter = "";
         private boolean includeNestedJars = false;
+        private List<ClassFileLocator> extraClassFileLocators = new ArrayList<>();
 
         private Builder() {
         }
@@ -40,7 +54,7 @@ public class ReflektConf {
          * Filter the class files found according to this filter, it is used as a starts-with expression
          */
         public Builder setPackageFilter(String packageFilter) {
-            this.packageFilter = packageFilter;
+            this.packageFilter = Objects.requireNonNull(packageFilter);
             return this;
         }
 
@@ -49,6 +63,14 @@ public class ReflektConf {
          */
         public Builder setIncludeNestedJars(boolean includeNestedJars) {
             this.includeNestedJars = includeNestedJars;
+            return this;
+        }
+
+        /**
+         * Want to implement your own class file locator, pass it in the conf.
+         */
+        public Builder setExtraClassFileLocators(List<ClassFileLocator> extraClassFileLocators) {
+            this.extraClassFileLocators = Objects.requireNonNull(extraClassFileLocators);
             return this;
         }
 

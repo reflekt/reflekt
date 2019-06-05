@@ -2,9 +2,40 @@ package se.jensim.reflekt.internal;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 public class ReflektImplTest {
+
+    @Test
+    public void testGetAllConstructors() {
+        // given
+
+        // when
+        fail("Not yet implemented");
+
+        // then
+    }
+
+    @Test
+    public void testGetAllFields() {
+        // given
+
+        // when
+        fail("Not yet implemented");
+
+        // then
+    }
+
+    @Test
+    public void testGetAllMethods() {
+        // given
+
+        // when
+        fail("Not yet implemented");
+
+        // then
+    }
+
 
     @Test
     public void testGetAllTypes() {

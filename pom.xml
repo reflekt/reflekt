@@ -24,8 +24,8 @@
 
     <modules>
         <module>reflekt-java</module>
-        <module>reflekt-kotlin</module>
-        <module>example</module>
+<!--        <module>reflekt-kotlin</module>-->
+<!--        <module>example</module>-->
     </modules>
 
     <dependencyManagement>
