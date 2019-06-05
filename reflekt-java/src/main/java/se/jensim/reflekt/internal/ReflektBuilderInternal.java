@@ -1,9 +1,9 @@
 package se.jensim.reflekt.internal;
 
-import se.jensim.reflekt.*;
+import se.jensim.reflekt.Reflekt;
+import se.jensim.reflekt.ReflektConf;
 
 import java.util.Arrays;
-import java.util.List;
 
 public interface ReflektBuilderInternal {
 
@@ -12,21 +12,21 @@ public interface ReflektBuilderInternal {
     }
 
     static Reflekt reflekt(ReflektConf conf) {
-        String packageFilter = conf.getPackageFilter();
-        ClassFileLocator jarLocator = new ClassFileLocatorJar(packageFilter);
-        ClassFileLocator classPathLocator = new ClassFileLocatorClassPath(packageFilter);
-        List<ClassFileLocator> locatorList = Arrays.asList(jarLocator, classPathLocator);
-        ReflektAllTypes a = new ReflektAllTypesImpl(locatorList);
-        ReflektSubClasses k = new ReflektSubClassesImpl(a);
-        ReflektClassesAnnotatedWith b = new ReflektClassesAnnotatedWithImpl();
-        ReflektConstructorsAnnotatedWith c = new ReflektConstructorsAnnotatedWithImpl();
-        ReflektConstructorsMatchParams d = new ReflektConstructorsMatchParamsImpl();
-        ReflektConstructorsWithAnyParamAnnotated e = new ReflektConstructorsWithAnyParamAnnotatedImpl();
-        ReflektFieldsAnnotatedWith f = new ReflektFieldsAnnotatedWithImpl();
-        ReflektMethodsAnnotatedWith g = new ReflektMethodsAnnotatedWithImpl();
-        ReflektMethodsMatchParams h = new ReflektMethodsMatchParamsImpl();
-        ReflektMethodsReturn i = new ReflektMethodsReturnImpl();
-        ReflektMethodsWithAnyParamAnnotated j = new ReflektMethodsWithAnyParamAnnotatedImpl();
+        var jarLocator = new ClassFileLocatorJar(conf);
+        var classPathLocator = new ClassFileLocatorClassPath(conf);
+        var locatorList = Arrays.asList(jarLocator, classPathLocator);
+        var a = new ReflektAllTypesImpl(conf, locatorList);
+        var k = new ReflektSubClassesImpl(a);
+        var l = new ReflektAllClassesImpl(a);
+        var b = new ReflektClassesAnnotatedWithImpl(l);
+        var c = new ReflektConstructorsAnnotatedWithImpl();
+        var d = new ReflektConstructorsMatchParamsImpl();
+        var e = new ReflektConstructorsWithAnyParamAnnotatedImpl();
+        var f = new ReflektFieldsAnnotatedWithImpl();
+        var g = new ReflektMethodsAnnotatedWithImpl();
+        var h = new ReflektMethodsMatchParamsImpl();
+        var i = new ReflektMethodsReturnImpl();
+        var j = new ReflektMethodsWithAnyParamAnnotatedImpl();
         return new ReflektImpl(a, b, c, d, e, f, g, h, i, j, k);
     }
 }

@@ -1,45 +1,39 @@
 package se.jensim.reflekt.internal;
 
 import se.jensim.reflekt.ClassFileLocator;
+import se.jensim.reflekt.ReflektConf;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class ClassFileLocatorClassPath implements ClassFileLocator {
 
-    private static final String classNameMatcher = "^.*/([A-Za-z0-9$])*[A-Za-z0-9]+\\.class$";
+    private static final String CLASS_NAME_MATCHER = "^.*/([A-Za-z0-9$])*[A-Za-z0-9]+\\.class$";
     private final String packageFilter;
     private final String packageFileMatcher;
-    private Set<String> keeper = null;
-    private final Object lock = new Object();
+    private Map<Boolean, Set<String>> keeper = new ConcurrentHashMap<>();
 
-
-    ClassFileLocatorClassPath(String packageFilter) {
-        this.packageFilter = packageFilter;
+    ClassFileLocatorClassPath(ReflektConf conf) {
+        packageFilter = conf.getPackageFilter();
         packageFileMatcher = packageFilter.replace('.', File.separatorChar);
     }
 
     @Override
     public Set<String> getClasses(boolean includeNestedJars) {
-        synchronized (lock) {
-            if (keeper == null) {
-                initialize();
-            }
-        }
-        return Collections.unmodifiableSet(keeper);
+        return keeper.computeIfAbsent(false, b -> initialize());
     }
 
-    private void initialize() {
-
+    private Set<String> initialize() {
         try {
             Iterator<URL> urlIterator = Thread.currentThread().getContextClassLoader().getResources("./").asIterator();
-            keeper = StreamSupport.stream(Spliterators.spliteratorUnknownSize(urlIterator, 0), false)
+            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(urlIterator, 0), false)
                     .map(u -> {
                         try {
                             return new File(u.toURI());
@@ -57,6 +51,7 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return Collections.emptySet();
     }
 
     private List<FileWithRoot> travel(FileWithRoot root) {
@@ -87,7 +82,7 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
     }
 
     private boolean isClassFile(File file) {
-        return file.isFile() && file.getPath().matches(classNameMatcher);
+        return file.isFile() && file.getPath().matches(CLASS_NAME_MATCHER);
     }
 
     private class FileWithRoot {

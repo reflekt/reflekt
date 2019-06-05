@@ -1,6 +1,7 @@
 package se.jensim.reflekt.internal;
 
 import se.jensim.reflekt.ClassFileLocator;
+import se.jensim.reflekt.ReflektConf;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +25,8 @@ class ClassFileLocatorJar implements ClassFileLocator {
     private final Map<Boolean, Set<String>> keeper = new ConcurrentHashMap<>();
 
 
-    ClassFileLocatorJar(String packageFilter) {
-        this.packageFilter = packageFilter;
+    ClassFileLocatorJar(ReflektConf conf) {
+        this.packageFilter = conf.getPackageFilter();
     }
 
     @Override

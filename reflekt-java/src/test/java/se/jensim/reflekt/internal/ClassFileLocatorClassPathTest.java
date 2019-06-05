@@ -1,16 +1,17 @@
 package se.jensim.reflekt.internal;
 
 import org.junit.Test;
+import se.jensim.reflekt.ReflektConf;
 
 import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 public class ClassFileLocatorClassPathTest {
 
-    private final ClassFileLocatorClassPath target = new ClassFileLocatorClassPath("se.jensim.reflekt");
+    private final ReflektConf conf = ReflektConf.builder().setPackageFilter("se.jensim.reflekt").build();
+    private final ClassFileLocatorClassPath target = new ClassFileLocatorClassPath(conf);
 
     @Test
     public void getClasses() {
