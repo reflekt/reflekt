@@ -1,25 +1,48 @@
 package se.jensim.reflekt.internal;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Collections;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class ClassFileLocatorJarTest {
 
-    private final ClassFileLocatorJar target = new ClassFileLocatorJar("se.jensim.reflekt");
+    @Rule
+    public TemporaryFolder tmpDir = new TemporaryFolder();
+
+    private static final String PACKAGE_FILTER = "se.jensim.reflekt";
+    private static final String GOOD_CLASS_FILE = "/" + PACKAGE_FILTER.replace('.', '/') + "/example/test/Foo$Bar.class";
 
     @Test
     public void getClasses() {
         // given
+        var dir = tmpDir.getRoot();
+        File file = new File(dir, "MyJar.jar");
+        try (var os = new ZipOutputStream(new FileOutputStream(file))) {
+            os.putNextEntry(new ZipEntry(GOOD_CLASS_FILE));
+            os.write("I am a class file, i promise".getBytes());
+            os.putNextEntry(new ZipEntry("/com/example/BooFar.class"));
+            os.write("I am a class file, but im not wanted".getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Failed writing temp zipfile");
+        }
 
         // when
-        Set<String> classes = target.getClasses(true);
-        fail("Not yet implemented");
+        Set<String> classes = ClassFileLocatorJar.getClassesFromNestedJars(file.toURI(), PACKAGE_FILTER, false);
 
         // then
-        assertThat(classes, is(not(empty())));
+        assertThat(classes, equalTo(Collections.singleton("se.jensim.reflekt.example.test.Foo.Bar")));
     }
 }
