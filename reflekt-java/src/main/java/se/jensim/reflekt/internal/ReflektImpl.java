@@ -79,7 +79,7 @@ class ReflektImpl implements Reflekt {
     }
 
     @Override
-    public Set<Class> getClassesAnnotatedWith(Class<Annotation> annotation) {
+    public Set<Class> getClassesAnnotatedWith(Class<? extends Annotation> annotation) {
         Objects.requireNonNull(annotation);
         return reflektClassesAnnotatedWith.getClassesAnnotatedWith(annotation);
     }

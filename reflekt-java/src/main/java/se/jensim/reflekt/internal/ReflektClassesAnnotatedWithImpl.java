@@ -23,7 +23,7 @@ class ReflektClassesAnnotatedWithImpl implements ReflektClassesAnnotatedWith {
     }
 
     @Override
-    public Set<Class> getClassesAnnotatedWith(Class<Annotation> annotation) {
+    public Set<Class> getClassesAnnotatedWith(Class<? extends Annotation> annotation) {
         return keeper.computeIfAbsent(false, b -> init())
                 .getOrDefault(annotation.getCanonicalName(), defaultReturn);
     }

@@ -5,5 +5,9 @@ import java.util.Set;
 
 public interface ReflektClassesAnnotatedWith {
 
-    Set<Class> getClassesAnnotatedWith(Class<Annotation> annotation);
+    /**
+     * Only Runtime-visible annotations are discoverable
+     * @see java.lang.annotation.Retention
+     */
+    Set<Class> getClassesAnnotatedWith(Class<? extends Annotation> annotation);
 }
