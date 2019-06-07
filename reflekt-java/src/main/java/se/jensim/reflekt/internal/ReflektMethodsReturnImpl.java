@@ -7,14 +7,15 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
+import static se.jensim.reflekt.internal.LazyBuilder.lazy;
 
 class ReflektMethodsReturnImpl implements ReflektMethodsReturn {
 
-    private final Map<Boolean, Map<String, Set<Method>>> keeper = new ConcurrentHashMap<>();
+    private final Supplier<Map<String, Set<Method>>> keeper = lazy(this::init);
     private final ReflektAllMethods reflektAllMethods;
     private Set<Method> defaultValue = Collections.emptySet();
 
@@ -24,8 +25,7 @@ class ReflektMethodsReturnImpl implements ReflektMethodsReturn {
 
     @Override
     public Set<Method> getMethodsReturn(Class clazz) {
-        return keeper.computeIfAbsent(false, b -> init())
-                .getOrDefault(clazz.getCanonicalName(), defaultValue);
+        return keeper.get().getOrDefault(clazz.getCanonicalName(), defaultValue);
     }
 
     private Map<String, Set<Method>> init() {

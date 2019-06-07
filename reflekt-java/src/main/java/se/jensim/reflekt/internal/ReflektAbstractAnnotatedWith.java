@@ -3,29 +3,28 @@ package se.jensim.reflekt.internal;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
+import static se.jensim.reflekt.internal.LazyBuilder.lazy;
 
 abstract class ReflektAbstractAnnotatedWith<T extends AnnotatedElement> {
 
-    private final Map<Boolean, Map<String, Set<T>>> keeper = new ConcurrentHashMap<>();
+    private final Supplier<Map<String, Set<T>>> keeper = lazy(this::getMapOfAnnotionToData);
     private final Set<T> defaultValue = Collections.emptySet();
 
     protected abstract Set<T> getSourceDatas();
 
     protected Set<T> getAnnotatedTypes(Class<? extends Annotation> annotation) {
-        return keeper.computeIfAbsent(false, b -> getMapOfAnnotionToData())
-                .getOrDefault(annotation.getCanonicalName(), defaultValue);
+        return keeper.get().getOrDefault(annotation.getCanonicalName(), defaultValue);
     }
 
     private Map<String, Set<T>> getMapOfAnnotionToData() {
         return getSourceDatas().stream()
                 .flatMap(this::multiplex)
-                .collect(Collectors.groupingBy((Pair p) -> p.annotation.annotationType().getCanonicalName(),
-                        Collectors.mapping((Pair h) -> h.data, toSet())));
+                .collect(groupingBy(p -> p.annotation.annotationType().getCanonicalName(),
+                        mapping(h -> h.data, toSet())));
     }
 
     private Stream<Pair> multiplex(T data) {

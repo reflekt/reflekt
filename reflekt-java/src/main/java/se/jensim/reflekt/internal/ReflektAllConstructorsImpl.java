@@ -4,14 +4,15 @@ import se.jensim.reflekt.ReflektAllConstructors;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import static se.jensim.reflekt.internal.LazyBuilder.lazy;
 
 public class ReflektAllConstructorsImpl implements ReflektAllConstructors {
 
-    private final Map<Boolean, Set<Constructor>> keeper = new ConcurrentHashMap<>();
+    private final Supplier<Set<Constructor>> keeper = lazy(this::initialize);
     private final ReflektAllClasses reflektAllClasses;
 
     ReflektAllConstructorsImpl(ReflektAllClasses reflektAllClasses) {
@@ -20,7 +21,7 @@ public class ReflektAllConstructorsImpl implements ReflektAllConstructors {
 
     @Override
     public Set<Constructor> getAllConstructors() {
-        return keeper.computeIfAbsent(false, b -> initialize());
+        return keeper.get();
     }
 
     private Set<Constructor> initialize() {

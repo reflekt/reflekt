@@ -5,20 +5,19 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
+import static se.jensim.reflekt.internal.LazyBuilder.lazy;
 
 abstract class ReflektAbstractAnyParamAnnotated<T> {
 
-    private final Map<Boolean, Map<String, Set<T>>> keeper = new ConcurrentHashMap<>();
+    private final Supplier<Map<String, Set<T>>> keeper = lazy(this::init);
     private Set<T> defaultValue = Collections.emptySet();
 
     protected Set<T> getAnnotatedTypes(Class<? extends Annotation> annotation) {
-        return keeper.computeIfAbsent(false, b -> init())
-                .getOrDefault(annotation.getCanonicalName(), defaultValue);
+        return keeper.get().getOrDefault(annotation.getCanonicalName(), defaultValue);
     }
 
     private Map<String, Set<T>> init() {
@@ -35,7 +34,7 @@ abstract class ReflektAbstractAnyParamAnnotated<T> {
     }
 
     private Set<Annotation> getAnnotationSetFromParams(T type) {
-        return Arrays.stream(getAnnotationsFromParams(type)).flatMap(Arrays::stream).collect(Collectors.toSet());
+        return Arrays.stream(getAnnotationsFromParams(type)).flatMap(Arrays::stream).collect(toSet());
     }
 
     protected abstract Annotation[][] getAnnotationsFromParams(T type);

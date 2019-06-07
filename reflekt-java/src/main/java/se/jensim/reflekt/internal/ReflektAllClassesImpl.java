@@ -2,15 +2,16 @@ package se.jensim.reflekt.internal;
 
 import se.jensim.reflekt.ReflektAllTypes;
 
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
+
+import static java.util.stream.Collectors.toSet;
+import static se.jensim.reflekt.internal.LazyBuilder.lazy;
 
 class ReflektAllClassesImpl implements ReflektAllClasses {
 
     private static final int PARALLEL_CLASS_LOAD_BREAKPOINT = 49;
-    private final Map<Boolean, Set<Class>> keeper = new ConcurrentHashMap<>();
+    private final Supplier<Set<Class>> keeper = lazy(this::init);
     private final ReflektAllTypes reflektAllTypes;
 
     ReflektAllClassesImpl(ReflektAllTypes reflektAllTypes) {
@@ -19,15 +20,15 @@ class ReflektAllClassesImpl implements ReflektAllClasses {
 
     @Override
     public Set<Class> getAllClasses() {
-        return keeper.computeIfAbsent(false, b -> init());
+        return keeper.get();
     }
 
     private Set<Class> init() {
         var allTypes = reflektAllTypes.getAllTypes();
         if (allTypes.size() > PARALLEL_CLASS_LOAD_BREAKPOINT) {
-            return allTypes.stream().parallel().map(this::safeLoad).collect(Collectors.toSet());
+            return allTypes.stream().parallel().map(this::safeLoad).collect(toSet());
         } else {
-            return allTypes.stream().map(this::safeLoad).collect(Collectors.toSet());
+            return allTypes.stream().map(this::safeLoad).collect(toSet());
         }
     }
 
