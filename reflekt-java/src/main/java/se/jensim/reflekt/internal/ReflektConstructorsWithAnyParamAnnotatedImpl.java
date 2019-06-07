@@ -5,16 +5,11 @@ import se.jensim.reflekt.ReflektConstructorsWithAnyParamAnnotated;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
-class ReflektConstructorsWithAnyParamAnnotatedImpl implements ReflektConstructorsWithAnyParamAnnotated {
+class ReflektConstructorsWithAnyParamAnnotatedImpl extends ReflektAbstractAnyParamAnnotated<Constructor> implements ReflektConstructorsWithAnyParamAnnotated {
 
-    private final Map<Boolean, Map<String, Set<Constructor>>> keeper = new ConcurrentHashMap<>();
     private final ReflektAllConstructors reflektAllConstructors;
-    private Set<Constructor> defaultValue = Collections.emptySet();
 
     ReflektConstructorsWithAnyParamAnnotatedImpl(ReflektAllConstructors reflektAllConstructors) {
         this.reflektAllConstructors = reflektAllConstructors;
@@ -22,10 +17,16 @@ class ReflektConstructorsWithAnyParamAnnotatedImpl implements ReflektConstructor
 
     @Override
     public Set<Constructor> getConstructorsWithAnyParamAnnotated(Class<? extends Annotation> annotation) {
-        return keeper.computeIfAbsent(false, b -> init()).getOrDefault(annotation.getCanonicalName(), defaultValue);
+        return getAnnotatedTypes(annotation);
     }
 
-    private Map<String, Set<Constructor>> init() {
-        throw new UnsupportedOperationException("Not yet implemented"); // TODO
-}
+    @Override
+    protected Set<Constructor> getSourceDatas() {
+        return reflektAllConstructors.getAllConstructors();
+    }
+
+    @Override
+    protected Annotation[][] getAnnotationsFromParams(Constructor type) {
+        return type.getParameterAnnotations();
+    }
 }

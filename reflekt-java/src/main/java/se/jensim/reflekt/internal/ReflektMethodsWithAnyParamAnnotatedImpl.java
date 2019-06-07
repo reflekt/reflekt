@@ -5,16 +5,11 @@ import se.jensim.reflekt.ReflektMethodsWithAnyParamAnnotated;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
-class ReflektMethodsWithAnyParamAnnotatedImpl implements ReflektMethodsWithAnyParamAnnotated {
+class ReflektMethodsWithAnyParamAnnotatedImpl extends ReflektAbstractAnyParamAnnotated<Method> implements ReflektMethodsWithAnyParamAnnotated {
 
-    private final Map<Boolean, Map<String, Set<Method>>> keeper = new ConcurrentHashMap<>();
     private final ReflektAllMethods reflektAllMethods;
-    private Set<Method> defaultValue = Collections.emptySet();
 
     ReflektMethodsWithAnyParamAnnotatedImpl(ReflektAllMethods reflektAllMethods) {
         this.reflektAllMethods = reflektAllMethods;
@@ -22,11 +17,16 @@ class ReflektMethodsWithAnyParamAnnotatedImpl implements ReflektMethodsWithAnyPa
 
     @Override
     public Set<Method> getMethodsWithAnyParamAnnotated(Class<? extends Annotation> annotation) {
-        return keeper.computeIfAbsent(false, b -> init())
-                .getOrDefault(annotation.getCanonicalName(), defaultValue);
+        return getAnnotatedTypes(annotation);
     }
 
-    private Map<String, Set<Method>> init() {
-        throw new UnsupportedOperationException("Not yet implemented"); // TODO
-}
+    @Override
+    protected Set<Method> getSourceDatas() {
+        return reflektAllMethods.getAllMethods();
+    }
+
+    @Override
+    protected Annotation[][] getAnnotationsFromParams(Method type) {
+        return type.getParameterAnnotations();
+    }
 }

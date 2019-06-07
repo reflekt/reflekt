@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toSet;
+
 class ReflektMethodsReturnImpl implements ReflektMethodsReturn {
 
     private final Map<Boolean, Map<String, Set<Method>>> keeper = new ConcurrentHashMap<>();
@@ -26,6 +29,7 @@ class ReflektMethodsReturnImpl implements ReflektMethodsReturn {
     }
 
     private Map<String, Set<Method>> init() {
-        throw new UnsupportedOperationException("Not yet implemented"); // TODO
+        return reflektAllMethods.getAllMethods().stream().collect(groupingBy(
+                m -> m.getReturnType().getCanonicalName(), toSet()));
     }
 }
