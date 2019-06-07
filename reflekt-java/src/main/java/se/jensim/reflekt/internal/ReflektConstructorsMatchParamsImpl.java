@@ -11,11 +11,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toSet;
+
 class ReflektConstructorsMatchParamsImpl implements ReflektConstructorsMatchParams {
 
     private final Map<Boolean, Map<String, Set<Constructor>>> keeper = new ConcurrentHashMap<>();
     private final ReflektAllConstructors reflektAllConstructors;
-    private Set<Constructor> defaultValue = Collections.emptySet();
+    private final Set<Constructor> defaultValue = Collections.emptySet();
 
     ReflektConstructorsMatchParamsImpl(ReflektAllConstructors reflektAllConstructors) {
         this.reflektAllConstructors = reflektAllConstructors;
@@ -23,14 +26,29 @@ class ReflektConstructorsMatchParamsImpl implements ReflektConstructorsMatchPara
 
     @Override
     public Set<Constructor> getConstructorsMatchParams(Class... paramClasses) {
-        var strList = Arrays.stream(paramClasses)
-                .map(Class::getCanonicalName)
-                .collect(Collectors.joining(", ", "[", "]"));
         return keeper.computeIfAbsent(false, b -> init())
-                .getOrDefault(strList, defaultValue);
+                .getOrDefault(bakeParams(paramClasses), defaultValue);
     }
 
     private Map<String, Set<Constructor>> init() {
-        throw new UnsupportedOperationException("Not yet implemented"); // TODO
-}
+        Map<String, Set<Constructor>> collect = reflektAllConstructors.getAllConstructors().stream()
+                .collect(groupingBy(this::bakeParams, toSet()));
+        return collect;
+    }
+
+    private String bakeParams(Constructor constructor) {
+        var declaredClass = constructor.getDeclaringClass();
+        var host = declaredClass.getNestHost();
+        Class[] parameterTypes = constructor.getParameterTypes();
+        if (!declaredClass.equals(host)) {
+            parameterTypes = Arrays.copyOfRange(parameterTypes, 1, parameterTypes.length);
+        }
+        return bakeParams(parameterTypes);
+    }
+
+    private String bakeParams(Class[] paramClasses) {
+        return Arrays.stream(paramClasses)
+                .map(Class::getCanonicalName)
+                .collect(Collectors.joining(", ", "[", "]"));
+    }
 }

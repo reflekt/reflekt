@@ -43,20 +43,21 @@ public class ReflektConstructorsAnnotatedWithImplTest {
     private @interface AnAnnotation {
     }
 
+    @SuppressWarnings("unused")
     private class MyTestClass {
 
         @AnAnnotation
-        public MyTestClass(Boolean a) {
+        MyTestClass(Boolean a) {
         }
 
-        public MyTestClass(Short b) {
+        MyTestClass(Short b) {
         }
 
         @AnAnnotation
-        public MyTestClass(Integer c) {
+        MyTestClass(Integer c) {
         }
 
-        public MyTestClass() {
+        MyTestClass() {
         }
     }
 }

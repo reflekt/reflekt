@@ -11,6 +11,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toSet;
+
 class ReflektMethodsMatchParamsImpl implements ReflektMethodsMatchParams {
 
     private final Map<Boolean, Map<String, Set<Method>>> keeper = new ConcurrentHashMap<>();
@@ -23,14 +26,18 @@ class ReflektMethodsMatchParamsImpl implements ReflektMethodsMatchParams {
 
     @Override
     public Set<Method> getMethodsMatchParams(Class... paramClasses) {
-        var strList = Arrays.stream(paramClasses)
-                .map(Class::getCanonicalName)
-                .collect(Collectors.joining(", ","[","]"));
         return keeper.computeIfAbsent(false, b -> init())
-                .getOrDefault(strList, defaultValue);
+                .getOrDefault(bakeParams(paramClasses), defaultValue);
     }
 
     private Map<String, Set<Method>> init() {
-        throw new UnsupportedOperationException("Not yet implemented"); // TODO
-}
+        return reflektAllMethods.getAllMethods().stream().collect(groupingBy(
+                (Method m) -> bakeParams(m.getParameterTypes()), toSet()));
+    }
+
+    private String bakeParams(Class[] paramClasses) {
+        return Arrays.stream(paramClasses)
+                .map(Class::getCanonicalName)
+                .collect(Collectors.joining(", ", "[", "]"));
+    }
 }

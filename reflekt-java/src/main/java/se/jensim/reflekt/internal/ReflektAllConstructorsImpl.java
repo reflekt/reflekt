@@ -25,7 +25,7 @@ public class ReflektAllConstructorsImpl implements ReflektAllConstructors {
 
     private Set<Constructor> initialize() {
         return reflektAllClasses.getAllClasses().stream()
-                .flatMap(c -> Arrays.stream(c.getConstructors()))
+                .flatMap(c -> Arrays.stream(c.getDeclaredConstructors()))
                 .collect(Collectors.toSet());
     }
 }

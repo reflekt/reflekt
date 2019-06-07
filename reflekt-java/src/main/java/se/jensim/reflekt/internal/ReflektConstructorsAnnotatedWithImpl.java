@@ -5,15 +5,10 @@ import se.jensim.reflekt.ReflektConstructorsAnnotatedWith;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
-class ReflektConstructorsAnnotatedWithImpl implements ReflektConstructorsAnnotatedWith {
+class ReflektConstructorsAnnotatedWithImpl extends ReflektAbstractAnnotatedWith<Constructor> implements ReflektConstructorsAnnotatedWith {
 
-    private final Map<Boolean, Map<String, Set<Constructor>>> keeper = new ConcurrentHashMap<>();
-    private final Set<Constructor> defaultValue = Collections.emptySet();
     private final ReflektAllConstructors reflektAllConstructors;
 
     ReflektConstructorsAnnotatedWithImpl(ReflektAllConstructors reflektAllConstructors) {
@@ -22,11 +17,11 @@ class ReflektConstructorsAnnotatedWithImpl implements ReflektConstructorsAnnotat
 
     @Override
     public Set<Constructor> getConstructorsAnnotatedWith(Class<? extends Annotation> annotation) {
-        return keeper.computeIfAbsent(false,b -> init())
-                .getOrDefault(annotation.getCanonicalName(), defaultValue);
+        return getAnnotatedTypes(annotation);
     }
 
-    private Map<String, Set<Constructor>> init() {
-        throw new UnsupportedOperationException("Not yet implemented"); // TODO
+    @Override
+    protected Set<Constructor> getSourceDatas() {
+        return reflektAllConstructors.getAllConstructors();
     }
 }

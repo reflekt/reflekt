@@ -5,16 +5,11 @@ import se.jensim.reflekt.ReflektMethodsAnnotatedWith;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
-class ReflektMethodsAnnotatedWithImpl implements ReflektMethodsAnnotatedWith {
+class ReflektMethodsAnnotatedWithImpl extends ReflektAbstractAnnotatedWith<Method> implements ReflektMethodsAnnotatedWith {
 
-    private final Map<Boolean, Map<String, Set<Method>>> keeper = new ConcurrentHashMap<>();
     private final ReflektAllMethods reflektAllMethods;
-    private Set<Method> defaultValue = Collections.emptySet();
 
     ReflektMethodsAnnotatedWithImpl(ReflektAllMethods reflektAllMethods) {
         this.reflektAllMethods = reflektAllMethods;
@@ -22,11 +17,11 @@ class ReflektMethodsAnnotatedWithImpl implements ReflektMethodsAnnotatedWith {
 
     @Override
     public Set<Method> getMethodsAnnotatedWith(Class<? extends Annotation> annotation) {
-        return keeper.computeIfAbsent(false, b -> init())
-                .getOrDefault(annotation.getCanonicalName(), defaultValue);
+        return getAnnotatedTypes(annotation);
     }
 
-    private Map<String, Set<Method>> init() {
-        throw new UnsupportedOperationException("Not yet implemented"); // TODO
-}
+    @Override
+    protected Set<Method> getSourceDatas() {
+        return reflektAllMethods.getAllMethods();
+    }
 }

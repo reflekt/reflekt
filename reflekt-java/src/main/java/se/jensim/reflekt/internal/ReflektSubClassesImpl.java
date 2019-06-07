@@ -2,9 +2,7 @@ package se.jensim.reflekt.internal;
 
 import se.jensim.reflekt.ReflektSubClasses;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 class ReflektSubClassesImpl implements ReflektSubClasses {
@@ -25,5 +23,14 @@ class ReflektSubClassesImpl implements ReflektSubClasses {
 
     private Map<String, Set<Class>> init() {
         throw new UnsupportedOperationException("Not yet implemented"); // TODO
+    }
+
+    private List<Class> getSuperTypes(Class aClass) {
+        var supertypes = Arrays.asList(aClass.getInterfaces());
+        Class superclass = aClass.getSuperclass();
+        if (superclass != null) {
+            supertypes.add(superclass);
+        }
+        return supertypes;
     }
 }

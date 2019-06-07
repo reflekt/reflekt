@@ -30,16 +30,16 @@ public class ReflektAllConstructorsImplTest {
     @SuppressWarnings("unused")
     private class ATestClassToDiscover {
 
-        public ATestClassToDiscover(String a) {
+        ATestClassToDiscover(String a) {
         }
 
-        public ATestClassToDiscover(Boolean b) {
+        ATestClassToDiscover(Boolean b) {
         }
 
-        public ATestClassToDiscover(Integer c) {
+        ATestClassToDiscover(Integer c) {
         }
 
-        public ATestClassToDiscover() {
+        ATestClassToDiscover() {
         }
     }
 }

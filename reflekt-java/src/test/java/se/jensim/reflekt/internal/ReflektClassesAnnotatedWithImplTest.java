@@ -31,15 +31,15 @@ public class ReflektClassesAnnotatedWithImplTest {
         assertThat(annotatedClasses, equalTo(Set.of(WithAnnotation.class)));
     }
 
-    class NoAnnotation {
+    private class NoAnnotation {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
-    @interface MyAnnotation {
+    private @interface MyAnnotation {
     }
 
     @MyAnnotation
-    class WithAnnotation {
+    private class WithAnnotation {
     }
 }
