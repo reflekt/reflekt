@@ -1,8 +1,11 @@
 package se.jensim.reflekt.internal;
 
-import org.junit.Test;
-import se.jensim.reflekt.ReflektAllConstructors;
-import se.jensim.reflekt.ReflektConstructorsAnnotatedWith;
+import static java.util.stream.Collectors.toSet;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static se.jensim.reflekt.internal.LazyBuilder.lazy;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,16 +15,14 @@ import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Set;
 
-import static java.util.stream.Collectors.toSet;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Test;
+import se.jensim.reflekt.ReflektAllConstructors;
+import se.jensim.reflekt.ReflektConstructorsAnnotatedWith;
 
 public class ReflektConstructorsAnnotatedWithImplTest {
 
     private ReflektAllConstructors mocka = mock(ReflektAllConstructors.class);
-    private final ReflektConstructorsAnnotatedWith target = new ReflektConstructorsAnnotatedWithImpl(mocka);
+    private final ReflektConstructorsAnnotatedWith target = new ReflektConstructorsAnnotatedWithImpl(lazy(() -> mocka));
 
     @Test
     public void testGetConstructorsAnnotatedWith() {
@@ -31,11 +32,13 @@ public class ReflektConstructorsAnnotatedWithImplTest {
 
         // when
         var result = target.getConstructorsAnnotatedWith(AnAnnotation.class).stream()
-                .map(c -> c.getParameterTypes()[0].getSimpleName())
+                .map(Constructor::getParameterTypes)
+                .filter(a -> a.length >= 2)
+                .map(a -> a[1].getSimpleName())
                 .collect(toSet());
 
         // then
-        assertThat(result, is(Set.of("Integer", "Short")));
+        assertThat(result, is(Set.of("Integer", "Boolean")));
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -47,17 +50,17 @@ public class ReflektConstructorsAnnotatedWithImplTest {
     private class MyTestClass {
 
         @AnAnnotation
-        MyTestClass(Boolean a) {
+        public MyTestClass(Boolean a) {
         }
 
-        MyTestClass(Short b) {
+        public MyTestClass(Short b) {
         }
 
         @AnAnnotation
-        MyTestClass(Integer c) {
+        public MyTestClass(Integer c) {
         }
 
-        MyTestClass() {
+        public MyTestClass() {
         }
     }
 }

@@ -1,17 +1,18 @@
 package se.jensim.reflekt.internal;
 
-import se.jensim.reflekt.ReflektAllConstructors;
-import se.jensim.reflekt.ReflektConstructorsAnnotatedWith;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.Set;
+import java.util.function.Supplier;
+
+import se.jensim.reflekt.ReflektAllConstructors;
+import se.jensim.reflekt.ReflektConstructorsAnnotatedWith;
 
 class ReflektConstructorsAnnotatedWithImpl extends ReflektAbstractAnnotatedWith<Constructor> implements ReflektConstructorsAnnotatedWith {
 
-    private final ReflektAllConstructors reflektAllConstructors;
+    private final Supplier<ReflektAllConstructors> reflektAllConstructors;
 
-    ReflektConstructorsAnnotatedWithImpl(ReflektAllConstructors reflektAllConstructors) {
+    ReflektConstructorsAnnotatedWithImpl(Supplier<ReflektAllConstructors> reflektAllConstructors) {
         this.reflektAllConstructors = reflektAllConstructors;
     }
 
@@ -22,6 +23,6 @@ class ReflektConstructorsAnnotatedWithImpl extends ReflektAbstractAnnotatedWith<
 
     @Override
     protected Set<Constructor> getSourceDatas() {
-        return reflektAllConstructors.getAllConstructors();
+        return reflektAllConstructors.get().getAllConstructors();
     }
 }

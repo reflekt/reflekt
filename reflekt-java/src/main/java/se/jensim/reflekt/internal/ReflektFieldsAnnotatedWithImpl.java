@@ -1,17 +1,18 @@
 package se.jensim.reflekt.internal;
 
-import se.jensim.reflekt.ReflektAllFields;
-import se.jensim.reflekt.ReflektFieldsAnnotatedWith;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Set;
+import java.util.function.Supplier;
+
+import se.jensim.reflekt.ReflektAllFields;
+import se.jensim.reflekt.ReflektFieldsAnnotatedWith;
 
 class ReflektFieldsAnnotatedWithImpl extends ReflektAbstractAnnotatedWith<Field> implements ReflektFieldsAnnotatedWith {
 
-    private final ReflektAllFields reflektAllFields;
+    private final Supplier<ReflektAllFields> reflektAllFields;
 
-    ReflektFieldsAnnotatedWithImpl(ReflektAllFields reflektAllFields) {
+    ReflektFieldsAnnotatedWithImpl(Supplier<ReflektAllFields> reflektAllFields) {
         this.reflektAllFields = reflektAllFields;
     }
 
@@ -22,6 +23,6 @@ class ReflektFieldsAnnotatedWithImpl extends ReflektAbstractAnnotatedWith<Field>
 
     @Override
     protected Set<Field> getSourceDatas() {
-        return reflektAllFields.getAllFields();
+        return reflektAllFields.get().getAllFields();
     }
 }

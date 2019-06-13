@@ -3,12 +3,13 @@ package se.jensim.reflekt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public class ReflektConf {
 
     private final String packageFilter;
     private final boolean includeNestedJars;
-    private final List<ClassFileLocator> extraClassFileLocators;
+    private final List<Supplier<ClassFileLocator>> extraClassFileLocators;
 
     private ReflektConf(Builder builder) {
         packageFilter = builder.packageFilter;
@@ -37,7 +38,7 @@ public class ReflektConf {
     /**
      * Want to implement your own class file locator, pass it in the conf.
      */
-    public List<ClassFileLocator> getExtraClassFileLocators() {
+    public List<Supplier<ClassFileLocator>> getExtraClassFileLocators() {
         return extraClassFileLocators;
     }
 
@@ -45,7 +46,7 @@ public class ReflektConf {
 
         private String packageFilter = "";
         private boolean includeNestedJars = false;
-        private List<ClassFileLocator> extraClassFileLocators = new ArrayList<>();
+        private List<Supplier<ClassFileLocator>> extraClassFileLocators = new ArrayList<>();
 
         private Builder() {
         }
@@ -69,7 +70,7 @@ public class ReflektConf {
         /**
          * Want to implement your own class file locator, pass it in the conf.
          */
-        public Builder setExtraClassFileLocators(List<ClassFileLocator> extraClassFileLocators) {
+        public Builder setExtraClassFileLocators(List<Supplier<ClassFileLocator>> extraClassFileLocators) {
             this.extraClassFileLocators = Objects.requireNonNull(extraClassFileLocators);
             return this;
         }

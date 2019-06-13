@@ -1,20 +1,20 @@
 package se.jensim.reflekt.internal;
 
-import se.jensim.reflekt.ReflektAllTypes;
+import static java.util.stream.Collectors.toSet;
+import static se.jensim.reflekt.internal.LazyBuilder.lazy;
 
 import java.util.Set;
 import java.util.function.Supplier;
 
-import static java.util.stream.Collectors.toSet;
-import static se.jensim.reflekt.internal.LazyBuilder.lazy;
+import se.jensim.reflekt.ReflektAllTypes;
 
 class ReflektAllClassesImpl implements ReflektAllClasses {
 
     private static final int PARALLEL_CLASS_LOAD_BREAKPOINT = 49;
     private final Supplier<Set<Class>> keeper = lazy(this::init);
-    private final ReflektAllTypes reflektAllTypes;
+    private final Supplier<ReflektAllTypes> reflektAllTypes;
 
-    ReflektAllClassesImpl(ReflektAllTypes reflektAllTypes) {
+    ReflektAllClassesImpl(Supplier<ReflektAllTypes> reflektAllTypes) {
         this.reflektAllTypes = reflektAllTypes;
     }
 
@@ -24,7 +24,7 @@ class ReflektAllClassesImpl implements ReflektAllClasses {
     }
 
     private Set<Class> init() {
-        var allTypes = reflektAllTypes.getAllTypes();
+        var allTypes = reflektAllTypes.get().getAllTypes();
         if (allTypes.size() > PARALLEL_CLASS_LOAD_BREAKPOINT) {
             return allTypes.stream().parallel().map(this::safeLoad).collect(toSet());
         } else {

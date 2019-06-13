@@ -1,21 +1,21 @@
 package se.jensim.reflekt.internal;
 
-import se.jensim.reflekt.ReflektAllMethods;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toSet;
+import static se.jensim.reflekt.internal.LazyBuilder.lazy;
 
 import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toSet;
-import static se.jensim.reflekt.internal.LazyBuilder.lazy;
+import se.jensim.reflekt.ReflektAllMethods;
 
 public class ReflektAllMethodsImpl implements ReflektAllMethods {
 
     private final Supplier<Set<Method>> keeper = lazy(this::initialize);
-    private final ReflektAllClasses reflektAllClasses;
+    private final Supplier<ReflektAllClasses> reflektAllClasses;
 
-    ReflektAllMethodsImpl(ReflektAllClasses reflektAllClasses) {
+    ReflektAllMethodsImpl(Supplier<ReflektAllClasses> reflektAllClasses) {
         this.reflektAllClasses = reflektAllClasses;
     }
 
@@ -25,7 +25,7 @@ public class ReflektAllMethodsImpl implements ReflektAllMethods {
     }
 
     private Set<Method> initialize() {
-        return reflektAllClasses.getAllClasses().stream()
+        return reflektAllClasses.get().getAllClasses().stream()
                 .flatMap(c -> stream(c.getMethods()))
                 .collect(toSet());
     }

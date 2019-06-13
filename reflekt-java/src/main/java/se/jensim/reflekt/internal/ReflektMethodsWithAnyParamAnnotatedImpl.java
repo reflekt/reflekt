@@ -1,17 +1,18 @@
 package se.jensim.reflekt.internal;
 
-import se.jensim.reflekt.ReflektAllMethods;
-import se.jensim.reflekt.ReflektMethodsWithAnyParamAnnotated;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Set;
+import java.util.function.Supplier;
+
+import se.jensim.reflekt.ReflektAllMethods;
+import se.jensim.reflekt.ReflektMethodsWithAnyParamAnnotated;
 
 class ReflektMethodsWithAnyParamAnnotatedImpl extends ReflektAbstractAnyParamAnnotated<Method> implements ReflektMethodsWithAnyParamAnnotated {
 
-    private final ReflektAllMethods reflektAllMethods;
+    private final Supplier<ReflektAllMethods> reflektAllMethods;
 
-    ReflektMethodsWithAnyParamAnnotatedImpl(ReflektAllMethods reflektAllMethods) {
+    ReflektMethodsWithAnyParamAnnotatedImpl(Supplier<ReflektAllMethods> reflektAllMethods) {
         this.reflektAllMethods = reflektAllMethods;
     }
 
@@ -22,7 +23,7 @@ class ReflektMethodsWithAnyParamAnnotatedImpl extends ReflektAbstractAnyParamAnn
 
     @Override
     protected Set<Method> getSourceDatas() {
-        return reflektAllMethods.getAllMethods();
+        return reflektAllMethods.get().getAllMethods();
     }
 
     @Override

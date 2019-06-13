@@ -1,6 +1,6 @@
 package se.jensim.reflekt.internal;
 
-import se.jensim.reflekt.ReflektAllConstructors;
+import static se.jensim.reflekt.internal.LazyBuilder.lazy;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
@@ -8,14 +8,14 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static se.jensim.reflekt.internal.LazyBuilder.lazy;
+import se.jensim.reflekt.ReflektAllConstructors;
 
 public class ReflektAllConstructorsImpl implements ReflektAllConstructors {
 
     private final Supplier<Set<Constructor>> keeper = lazy(this::initialize);
-    private final ReflektAllClasses reflektAllClasses;
+    private final Supplier<ReflektAllClasses> reflektAllClasses;
 
-    ReflektAllConstructorsImpl(ReflektAllClasses reflektAllClasses) {
+    ReflektAllConstructorsImpl(Supplier<ReflektAllClasses> reflektAllClasses) {
         this.reflektAllClasses = reflektAllClasses;
     }
 
@@ -25,7 +25,7 @@ public class ReflektAllConstructorsImpl implements ReflektAllConstructors {
     }
 
     private Set<Constructor> initialize() {
-        return reflektAllClasses.getAllClasses().stream()
+        return reflektAllClasses.get().getAllClasses().stream()
                 .flatMap(c -> Arrays.stream(c.getDeclaredConstructors()))
                 .collect(Collectors.toSet());
     }

@@ -1,24 +1,25 @@
 package se.jensim.reflekt.internal;
 
-import org.junit.Test;
-import se.jensim.reflekt.ReflektAllConstructors;
-import se.jensim.reflekt.ReflektConstructorsMatchParams;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static se.jensim.reflekt.internal.LazyBuilder.lazy;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Test;
+import se.jensim.reflekt.ReflektAllConstructors;
+import se.jensim.reflekt.ReflektConstructorsMatchParams;
 
 public class ReflektConstructorsMatchParamsImplTest {
 
     private ReflektAllConstructors mocka = mock(ReflektAllConstructors.class);
-    private final ReflektConstructorsMatchParams target = new ReflektConstructorsMatchParamsImpl(mocka);
+    private final ReflektConstructorsMatchParams target = new ReflektConstructorsMatchParamsImpl(lazy(() -> mocka));
 
     @Test
     public void testGetConstructorsMatchParams() throws NoSuchMethodException {

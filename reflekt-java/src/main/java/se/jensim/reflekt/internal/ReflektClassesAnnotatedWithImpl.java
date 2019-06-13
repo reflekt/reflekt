@@ -1,15 +1,16 @@
 package se.jensim.reflekt.internal;
 
-import se.jensim.reflekt.ReflektClassesAnnotatedWith;
-
 import java.lang.annotation.Annotation;
 import java.util.Set;
+import java.util.function.Supplier;
+
+import se.jensim.reflekt.ReflektClassesAnnotatedWith;
 
 class ReflektClassesAnnotatedWithImpl extends ReflektAbstractAnnotatedWith<Class> implements ReflektClassesAnnotatedWith {
 
-    private final ReflektAllClasses reflektAllClasses;
+    private final Supplier<ReflektAllClasses> reflektAllClasses;
 
-    ReflektClassesAnnotatedWithImpl(ReflektAllClasses reflektAllClasses) {
+    ReflektClassesAnnotatedWithImpl(Supplier<ReflektAllClasses> reflektAllClasses) {
         this.reflektAllClasses = reflektAllClasses;
     }
 
@@ -20,6 +21,6 @@ class ReflektClassesAnnotatedWithImpl extends ReflektAbstractAnnotatedWith<Class
 
     @Override
     protected Set<Class> getSourceDatas() {
-        return reflektAllClasses.getAllClasses();
+        return reflektAllClasses.get().getAllClasses();
     }
 }

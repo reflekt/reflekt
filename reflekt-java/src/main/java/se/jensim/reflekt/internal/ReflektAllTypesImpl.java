@@ -1,23 +1,23 @@
 package se.jensim.reflekt.internal;
 
-import se.jensim.reflekt.ClassFileLocator;
-import se.jensim.reflekt.ReflektAllTypes;
-import se.jensim.reflekt.ReflektConf;
+import static java.util.stream.Collectors.toSet;
+import static se.jensim.reflekt.internal.LazyBuilder.lazy;
 
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import static java.util.stream.Collectors.toSet;
-import static se.jensim.reflekt.internal.LazyBuilder.lazy;
+import se.jensim.reflekt.ClassFileLocator;
+import se.jensim.reflekt.ReflektAllTypes;
+import se.jensim.reflekt.ReflektConf;
 
 class ReflektAllTypesImpl implements ReflektAllTypes {
 
     private final boolean includeNestedJars;
-    private final List<ClassFileLocator> classFileLocators;
+    private final List<Supplier<ClassFileLocator>> classFileLocators;
     private final Supplier<Set<String>> keeper = lazy(this::initialize);
 
-    ReflektAllTypesImpl(ReflektConf conf, List<ClassFileLocator> classFileLocators) {
+    ReflektAllTypesImpl(ReflektConf conf, List<Supplier<ClassFileLocator>> classFileLocators) {
         this.includeNestedJars = conf.isIncludeNestedJars();
         this.classFileLocators = classFileLocators;
     }
@@ -28,8 +28,9 @@ class ReflektAllTypesImpl implements ReflektAllTypes {
     }
 
     private Set<String> initialize() {
-        return classFileLocators.stream()
-                .flatMap(s -> s.getClasses(includeNestedJars).stream())
+
+        return classFileLocators.stream().parallel()
+                .flatMap(s -> s.get().getClasses(includeNestedJars).stream())
                 .collect(toSet());
     }
 }

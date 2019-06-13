@@ -1,7 +1,8 @@
 package se.jensim.reflekt.internal;
 
-import se.jensim.reflekt.ReflektAllConstructors;
-import se.jensim.reflekt.ReflektConstructorsMatchParams;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toSet;
+import static se.jensim.reflekt.internal.LazyBuilder.lazy;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
@@ -11,17 +12,16 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toSet;
-import static se.jensim.reflekt.internal.LazyBuilder.lazy;
+import se.jensim.reflekt.ReflektAllConstructors;
+import se.jensim.reflekt.ReflektConstructorsMatchParams;
 
 class ReflektConstructorsMatchParamsImpl implements ReflektConstructorsMatchParams {
 
     private final Supplier<Map<String, Set<Constructor>>> keeper = lazy(this::init);
-    private final ReflektAllConstructors reflektAllConstructors;
+    private final Supplier<ReflektAllConstructors> reflektAllConstructors;
     private final Set<Constructor> defaultValue = Collections.emptySet();
 
-    ReflektConstructorsMatchParamsImpl(ReflektAllConstructors reflektAllConstructors) {
+    ReflektConstructorsMatchParamsImpl(Supplier<ReflektAllConstructors> reflektAllConstructors) {
         this.reflektAllConstructors = reflektAllConstructors;
     }
 
@@ -31,7 +31,7 @@ class ReflektConstructorsMatchParamsImpl implements ReflektConstructorsMatchPara
     }
 
     private Map<String, Set<Constructor>> init() {
-        return reflektAllConstructors.getAllConstructors().stream()
+        return reflektAllConstructors.get().getAllConstructors().stream()
                 .collect(groupingBy(this::bakeParams, toSet()));
     }
 
