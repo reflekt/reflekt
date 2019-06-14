@@ -60,7 +60,7 @@ class Main {
             }
             if (!ok) {
                 System.err.println("${impl.name} failed! a=$a b=$b")
-                System.exit(1)
+                //System.exit(1)
             }
             return timeTaken
         }
@@ -77,7 +77,7 @@ fun List<BenchmarkResult>.prettyPrint() {
             "Min" to { it -> "${it.runs.min()}ms" },
             "Avg" to { it -> "${it.runs.average().roundTo(2)}ms" }
     ).println()
-    println("===============================================")
+    println("=================================================")
 }
 
 data class BenchmarkResult(val name: String, val initTime: Long, val runs: List<Long>) {

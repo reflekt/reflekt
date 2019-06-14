@@ -23,11 +23,13 @@ class TablePrinterKtTest {
 
         // then
         val expected = """
+            ___________
             |one|two_b|
             |  1|    1|
             |  2|    2|
             |  3|    3|
             |  4|    5|
+            ‾‾‾‾‾‾‾‾‾‾‾
         """.trimIndent()
         assertThat(result, Matchers.equalTo(expected))
     }
