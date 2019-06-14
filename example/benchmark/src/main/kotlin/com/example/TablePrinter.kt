@@ -21,7 +21,7 @@ class TablePrinter<T>(private val data: List<T>) {
 
     fun asCsv(vararg headers: Pair<String, (T) -> String>): TablePrinter<T> = with(separator = ", ", leftBorder = "", rightBorder = "", padding = ' ', headers = headers.toList())
 
-    fun print(): String {
+    override fun toString(): String {
         val matrix: List<List<String>> = listOf(headers.map { it.first }) +
                 data.map { d: T -> headers.map { it.second(d) } }
 
@@ -33,6 +33,14 @@ class TablePrinter<T>(private val data: List<T>) {
             it.mapIndexed { i, s -> s.padStart(max[i]!!) }
                     .joinToString(sep, lBorder, rBorder)
         }
+    }
+
+    fun print() {
+        print(toString())
+    }
+
+    fun println(){
+        println(toString())
     }
 }
 

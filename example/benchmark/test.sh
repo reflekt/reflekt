@@ -3,7 +3,7 @@
 echo "Building Example project with benchmarks"
 
 JAR="reflekt-benchmark-1.0-SNAPSHOT-jar-with-dependencies.jar"
-MAIN="com.example.annotations.Main"
+MAIN="com.example.Main"
 
 cd target
 java -cp ${JAR} ${MAIN} 3 null                    reflekt         org.reflections

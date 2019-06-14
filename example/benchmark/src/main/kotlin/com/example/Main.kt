@@ -1,4 +1,4 @@
-package com.example.annotations
+package com.example
 
 import org.reflections.Reflections
 import se.jensim.refleKt
@@ -34,7 +34,6 @@ class Main {
         fun main(args: Array<String>) {
             val iterations = args[0].toInt()
             pkgScope = args[1]
-            val jobNamePadLength = jobs.keys.maxBy { it.length }?.length ?: 10
             val jobs = args.drop(2).map { it to jobs[it] }
             println("Running $iterations iterations on same jvm with package limit to \"$pkgScope\" ${jobs.map { it.first }}!")
             jobs.map { (name, jobConstructor) ->
@@ -72,21 +71,14 @@ class Main {
 }
 
 fun List<BenchmarkResult>.prettyPrint() {
-    val nameMax = map { it.name.length }.max()!!
-    val initTimeMax = map { it.initTime.toString().length }.max()!!
-    val initAndFirstMax = map { it.initAndFirst.toString().length }.max()!!
-    val maxMax = map { it.max.toString().length }.max()!!
-    val minMax = map { it.min.toString().length }.max()!!
-    val avgMax = map { it.avg.toString().length }.max()!!
-    forEach {
-        val jobName = it.name.padEnd(nameMax, '_')
-        val init = "Init=${it.initTime.toString().padStart(initTimeMax, '_')}ms"
-        val initFirst = "Init+First=${it.initAndFirst.toString().padStart(initAndFirstMax, '_')}ms"
-        val max = "Max=${it.max.toString().padStart(maxMax, '_')}ms"
-        val min = "Min=${it.min.toString().padStart(minMax, '_')}ms"
-        val avg = "Avg=${it.avg.toString().padStart(avgMax, '_')}ms"
-        println("[$jobName] $init, $initFirst, $max, $min, $avg")
-    }
+    table().with(
+            "Name" to BenchmarkResult::name,
+            "Init" to { it -> "${it.initTime}ms" },
+            "Init+First" to {it -> "${it.initAndFirst}ms"},
+            "Max" to {it-> "${it.runs.max()}ms"},
+            "Min" to {it-> "${it.runs.min()}ms"},
+            "Avg" to {it-> "${it.runs.average()}ms"}
+    ).println()
     println("===============================================")
 }
 
