@@ -64,20 +64,18 @@ class Main {
             }
             return timeTaken
         }
-
-        private fun Double.roundTo(decimals: Int = 2): Double =
-                times(10 * decimals).toLong().div(10.0 * decimals)
     }
 }
 
 fun List<BenchmarkResult>.prettyPrint() {
+    fun Double.roundTo(decimals: Int): Double = times(10 * decimals).toLong().div(10.0 * decimals)
     table().with(
             "Name" to BenchmarkResult::name,
             "Init" to { it -> "${it.initTime}ms" },
-            "Init+First" to {it -> "${it.initAndFirst}ms"},
-            "Max" to {it-> "${it.runs.max()}ms"},
-            "Min" to {it-> "${it.runs.min()}ms"},
-            "Avg" to {it-> "${it.runs.average()}ms"}
+            "Init+First" to { it -> "${it.initAndFirst}ms" },
+            "Max" to { it -> "${it.runs.max()}ms" },
+            "Min" to { it -> "${it.runs.min()}ms" },
+            "Avg" to { it -> "${it.runs.average().roundTo(2)}ms" }
     ).println()
     println("===============================================")
 }

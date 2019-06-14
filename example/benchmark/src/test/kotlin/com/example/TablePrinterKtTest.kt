@@ -19,7 +19,7 @@ class TablePrinterKtTest {
         // when
         val result = datas.table()
                 .with("one" to MyData::onne, "two_b" to MyData::twwo)
-                .print()
+                .toString()
 
         // then
         val expected = """
