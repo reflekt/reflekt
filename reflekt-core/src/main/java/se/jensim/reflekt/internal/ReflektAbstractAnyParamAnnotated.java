@@ -1,5 +1,10 @@
 package se.jensim.reflekt.internal;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toSet;
+import static se.jensim.reflekt.internal.LazyBuilder.lazy;
+
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,9 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.*;
-import static se.jensim.reflekt.internal.LazyBuilder.lazy;
 
 abstract class ReflektAbstractAnyParamAnnotated<T> {
 

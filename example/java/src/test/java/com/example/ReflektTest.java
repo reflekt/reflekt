@@ -1,20 +1,24 @@
 package com.example;
 
-import org.junit.Test;
-import se.jensim.reflekt.RefleKt;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static se.jensim.reflekt.ReflektBuilder.reflekt;
 
 import java.util.Set;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static se.jensim.RefleKt.refleKt;
+import org.junit.Test;
+import se.jensim.reflekt.Reflekt;
 
 public class ReflektTest {
 
     @Test
     public void createInstance() {
         // given
-        RefleKt reflekt = refleKt();
+        Reflekt reflekt = reflekt();
 
         // when
         Set<String> allTypes = reflekt.getAllTypes();

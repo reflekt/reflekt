@@ -1,12 +1,14 @@
 package se.jensim.reflekt.internal;
 
-import org.junit.Test;
-import se.jensim.reflekt.ReflektConf;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
 import java.util.Set;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
+import se.jensim.reflekt.ReflektConf;
 
 public class ClassFileLocatorClassPathTest {
 

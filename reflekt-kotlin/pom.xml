@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>reflekt-kotlin</artifactId>
-    <name>RefleKt</name>
+    <name>RefleKt Kotlin</name>
     <description>Like org.reflections, hoping it will be easier to use, and faster.</description>
 
     <licenses>
@@ -42,10 +42,18 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-reflect</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>se.jensim.reflekt</groupId>
+            <artifactId>reflekt-core</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

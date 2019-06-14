@@ -1,21 +1,28 @@
 package se.jensim.reflekt.internal;
 
-import se.jensim.reflekt.ClassFileLocator;
-import se.jensim.reflekt.ReflektConf;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.list;
+import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import static java.util.Collections.*;
-import static java.util.stream.Collectors.toList;
+import se.jensim.reflekt.ClassFileLocator;
+import se.jensim.reflekt.ReflektConf;
 
 class ClassFileLocatorJar implements ClassFileLocator {
 
