@@ -10,5 +10,5 @@ addons:
 install: false
 
 script:
-  - "mvn install"
+  - "./mvnw install"
   - "./verify_example.sh"

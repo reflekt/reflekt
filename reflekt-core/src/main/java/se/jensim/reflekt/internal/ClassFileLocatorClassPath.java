@@ -13,6 +13,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.Spliterators;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -21,6 +23,8 @@ import se.jensim.reflekt.ClassFileLocator;
 import se.jensim.reflekt.ReflektConf;
 
 public class ClassFileLocatorClassPath implements ClassFileLocator {
+
+    private static final Logger LOG = Logger.getLogger(ClassFileLocatorClassPath.class.getCanonicalName());
 
     private static final String CLASS_NAME_MATCHER = "^.*/([A-Za-z0-9$])*[A-Za-z0-9]+\\.class$";
     private final String packageFilter;
@@ -51,6 +55,7 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
                     .filter(Objects::nonNull);
             return initialize(rootFiles);
         } catch (IOException e) {
+            LOG.log(Level.WARNING, "Was unable to get class files from classpath", e);
             e.printStackTrace();
         }
         return Collections.emptySet();
@@ -100,11 +105,11 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
         final File root;
         final File file;
 
-        private FileWithRoot(File root) {
+        FileWithRoot(File root) {
             this(root, root);
         }
 
-        private FileWithRoot(File root, File file) {
+        FileWithRoot(File root, File file) {
             this.root = root;
             this.file = file;
         }
@@ -128,10 +133,9 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
             int initalDrop = root.getAbsolutePath().length()+1;
             String trimmedStart = file.getAbsolutePath().substring(initalDrop);
             String trimmedClass = trimmedStart.substring(0, trimmedStart.length() - 6);
-            String classRef = trimmedClass.replace('/', '.')
+            return trimmedClass.replace('/', '.')
                     .replace(File.separatorChar, '.')
                     .replace('$', '.');
-            return classRef;
 
         }
 

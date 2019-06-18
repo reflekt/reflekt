@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -26,6 +28,7 @@ import se.jensim.reflekt.ReflektConf;
 
 class ClassFileLocatorJar implements ClassFileLocator {
 
+    private Logger LOG = Logger.getLogger(getClass().getCanonicalName());
     private static final String CLASS_MATCHER = "^(/[A-Za-z0-9]+)+/([A-Za-z0-9]+[$]?)*[a-z]+\\.class$";
 
     private final String packageFilter;
@@ -50,7 +53,7 @@ class ClassFileLocatorJar implements ClassFileLocator {
                 return getClassesFromNestedJars(uri, packageFilter, includeNestedJars);
             }
         } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
+            LOG.log(Level.WARNING, "Was unable to get classes from within JAR.", e);
         }
         return Collections.emptySet();
     }

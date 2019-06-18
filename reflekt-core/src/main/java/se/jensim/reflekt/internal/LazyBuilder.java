@@ -12,7 +12,7 @@ interface LazyBuilder {
     class Lazy<T> implements Supplier<T> {
 
         private final Supplier<T> supplier;
-        private volatile T ref = null;
+        private T ref = null;
         private final Object lock = new Object();
 
         Lazy(Supplier<T> supplier) {
