@@ -8,5 +8,5 @@ MAIN="com.example.Main"
 cd target
 #java -cp ${JAR} ${MAIN} 3 null        reflekt         org.reflections
 #java -cp ${JAR} ${MAIN} 3 null        org.reflections reflekt
-java -cp ${JAR} ${MAIN} 3 com.example reflekt         org.reflections
-java -cp ${JAR} ${MAIN} 3 com.example org.reflections reflekt
+java -cp ${JAR} ${MAIN} 3 com.example RefleKt         org.reflections
+java -cp ${JAR} ${MAIN} 3 com.example org.reflections RefleKt

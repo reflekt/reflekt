@@ -2,7 +2,6 @@ package se.jensim.reflekt.internal;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,7 +24,7 @@ public class ClassFileLocatorJarTest {
     private static final String GOOD_CLASS_FILE = "/" + PACKAGE_FILTER.replace('.', '/') + "/example/test/Foo$Bar.class";
 
     @Test
-    public void getClasses() {
+    public void getClasses() throws IOException {
         // given
         var dir = tmpDir.getRoot();
         File file = new File(dir, "MyJar.jar");
@@ -34,9 +33,6 @@ public class ClassFileLocatorJarTest {
             os.write("I am a class file, i promise".getBytes());
             os.putNextEntry(new ZipEntry("/com/example/BooFar.class"));
             os.write("I am a class file, but im not wanted".getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Failed writing temp zipfile");
         }
 
         // when

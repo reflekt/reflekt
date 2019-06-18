@@ -56,7 +56,6 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
             return initialize(rootFiles);
         } catch (IOException e) {
             LOG.log(Level.WARNING, "Was unable to get class files from classpath", e);
-            e.printStackTrace();
         }
         return Collections.emptySet();
     }

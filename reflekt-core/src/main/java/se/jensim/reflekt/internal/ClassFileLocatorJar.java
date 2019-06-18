@@ -28,7 +28,7 @@ import se.jensim.reflekt.ReflektConf;
 
 class ClassFileLocatorJar implements ClassFileLocator {
 
-    private Logger LOG = Logger.getLogger(getClass().getCanonicalName());
+    private static final Logger LOG = Logger.getLogger(ClassFileLocatorJar.class.getCanonicalName());
     private static final String CLASS_MATCHER = "^(/[A-Za-z0-9]+)+/([A-Za-z0-9]+[$]?)*[a-z]+\\.class$";
 
     private final String packageFilter;
@@ -115,7 +115,7 @@ class ClassFileLocatorJar implements ClassFileLocator {
                 }
                 return list;
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.log(Level.WARNING, "Was unable to extract zip entries from zip file", e);
             }
         }
         return emptyList();
