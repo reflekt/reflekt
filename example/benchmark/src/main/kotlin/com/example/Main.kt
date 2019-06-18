@@ -1,9 +1,8 @@
 package com.example
 
-
 import org.reflections.Reflections
-import se.jensim.refleKt
-import se.jensim.reflekt.RefleKt
+import se.jensim.reflekt.Reflekt
+import se.jensim.reflekt.ReflektBuilder.reflekt
 
 private const val ORG_REFLECTIONS = "org.reflections"
 private const val REFLEKT = "RefleKt"
@@ -48,6 +47,7 @@ class Main {
                 BenchmarkResult(name, initTime, results)
             }.prettyPrint()
         }
+
         fun benchMark(impl: BenchmarkReflect): Long {
             val start = System.currentTimeMillis()
             val a = impl.getSubClassesOf(SuperClass::class.java)
@@ -68,7 +68,6 @@ class Main {
             return timeTaken
         }
     }
-
 }
 
 fun List<BenchmarkResult>.prettyPrint() {
@@ -83,13 +82,14 @@ fun List<BenchmarkResult>.prettyPrint() {
     ).println()
     println("=================================================")
 }
+
 data class BenchmarkResult(val name: String, val initTime: Long, val runs: List<Long>) {
     val initAndFirst = initTime + runs[0]
     val max = runs.max()!!
     val min = runs.min()!!
     val avg = runs.average().toLong()
-
 }
+
 class LeafClass : SuperClass()
 abstract class SuperClass : SuperClass2()
 
@@ -99,11 +99,11 @@ abstract class BenchmarkReflect(pkgScope: String) {
     abstract val name: String
     abstract fun getSubClassesOf(clazz: Class<*>): Set<Class<*>>
     abstract fun getAnnotatedWith(clazz: Class<out Annotation>): Set<Class<*>>
-
 }
+
 class RefleKtBenchmark(pkgScope: String) : BenchmarkReflect(pkgScope) {
     override val name = REFLEKT
-    private val refleKt: RefleKt = this.pkg?.let { refleKt(it) } ?: refleKt()
+    private val refleKt: Reflekt = this.pkg?.let { reflekt(it) } ?: reflekt()
     override fun getSubClassesOf(clazz: Class<*>): Set<Class<*>> = refleKt.getSubClasses(clazz)
     override fun getAnnotatedWith(clazz: Class<out Annotation>): Set<Class<*>> = refleKt.getClassesAnnotatedWith(clazz)
 }

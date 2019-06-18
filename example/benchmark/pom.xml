@@ -21,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>se.jensim.reflekt</groupId>
-            <artifactId>reflekt-kotlin</artifactId>
+            <artifactId>reflekt-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
