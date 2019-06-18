@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import se.jensim.reflekt.ReflektSubClasses;
 
@@ -23,9 +24,18 @@ class ReflektSubClassesImpl implements ReflektSubClasses {
     }
 
     private Set<Class> getSubClassesOf(Class<?> clazz) {
-        return reflektAllClasses.get().getAllClasses().stream()
+        return getClassStream()
                 .filter(c -> !clazz.equals(c))
                 .filter(clazz::isAssignableFrom)
                 .collect(Collectors.toSet());
+    }
+
+    private Stream<Class> getClassStream() {
+        Set<Class> allClasses = reflektAllClasses.get().getAllClasses();
+        if (allClasses.size() > 49) {
+            return allClasses.stream().parallel();
+        } else {
+            return allClasses.stream();
+        }
     }
 }

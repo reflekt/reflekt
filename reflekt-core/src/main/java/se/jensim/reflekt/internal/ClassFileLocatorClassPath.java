@@ -40,7 +40,7 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
     private Set<String> initialize() {
         try {
             Iterator<URL> urlIterator = Thread.currentThread().getContextClassLoader().getResources("./").asIterator();
-            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(urlIterator, 0), false)
+            Stream<File> rootFiles = StreamSupport.stream(Spliterators.spliteratorUnknownSize(urlIterator, 0), true)
                     .map(u -> {
                         try {
                             return new File(u.toURI());
@@ -48,17 +48,21 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
                             return null;
                         }
                     })
-                    .filter(Objects::nonNull)
-                    .map(FileWithRoot::new)
-                    .map(this::travel)
-                    .flatMap(List::stream)
-                    .map(FileWithRoot::asClassRef)
-                    .filter(a -> a.startsWith(packageFilter))
-                    .collect(Collectors.toSet());
+                    .filter(Objects::nonNull);
+            return initialize(rootFiles);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return Collections.emptySet();
+    }
+
+    Set<String> initialize(Stream<File> rootFiles){
+        return rootFiles.map(FileWithRoot::new)
+                .map(this::travel)
+                .flatMap(List::stream)
+                .map(FileWithRoot::asClassRef)
+                .filter(a -> a.startsWith(packageFilter))
+                .collect(Collectors.toSet());
     }
 
     private List<FileWithRoot> travel(FileWithRoot root) {
