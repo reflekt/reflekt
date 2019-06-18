@@ -12,3 +12,4 @@ install: false
 script:
   - "./mvnw install"
   - "./verify_example.sh"
+  - "./mvnw sonar:sonar"
