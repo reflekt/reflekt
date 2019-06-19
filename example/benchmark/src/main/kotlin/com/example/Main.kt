@@ -1,8 +1,8 @@
 package com.example
 
 import org.reflections.Reflections
-import se.jensim.reflekt.Reflekt
-import se.jensim.reflekt.ReflektBuilder.reflekt
+import org.reflekt.Reflekt
+import org.reflekt.ReflektBuilder.reflekt
 
 private const val ORG_REFLECTIONS = "org.reflections"
 private const val REFLEKT = "RefleKt"

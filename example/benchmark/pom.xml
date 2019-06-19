@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>se.jensim.reflekt</groupId>
+        <groupId>org.reflekt</groupId>
         <artifactId>example-parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>reflekt-benchmark</artifactId>
@@ -20,7 +20,7 @@
             <artifactId>kotlin-reflect</artifactId>
         </dependency>
         <dependency>
-            <groupId>se.jensim.reflekt</groupId>
+            <groupId>org.reflekt</groupId>
             <artifactId>reflekt-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

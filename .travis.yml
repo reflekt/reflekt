@@ -10,6 +10,20 @@ addons:
 install: false
 
 script:
-  - "./mvnw install"
-  - "./verify_example.sh"
-  - "./mvnw sonar:sonar"
+- "./mvnw install"
+- "./verify_example.sh"
+- "./mvnw sonar:sonar"
+
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_be6abfaeb7c9_key -iv $encrypted_be6abfaeb7c9_iv
+  -in .travis/gpg/jens.brimfors-secret-gpg.key.enc -out jens.brimfors-secret-gpg.key -d
+- gpg --import jens.brimfors-secret-gpg.key
+- gpg --import-ownertrust .travis/gpg/jens.brimfors-ownertrust-gpg.txt
+- cp .travis/settings.xml $HOME/.m2/settings.xml
+
+deploy:
+  provider: script
+  script: ./mvnw deploy
+  skip_cleanup: true
+  on:
+    tags: true

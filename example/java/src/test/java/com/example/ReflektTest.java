@@ -6,12 +6,12 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static se.jensim.reflekt.ReflektBuilder.reflekt;
+import static org.reflekt.ReflektBuilder.reflekt;
 
 import java.util.Set;
 
 import org.junit.Test;
-import se.jensim.reflekt.Reflekt;
+import org.reflekt.Reflekt;
 
 public class ReflektTest {
 
