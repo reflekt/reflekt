@@ -23,7 +23,7 @@ before_deploy:
 
 deploy:
   provider: script
-  script: ./mvnw deploy
+  script: ./mvnw -B release:prepare && ./mvnw release:perform
   skip_cleanup: true
   on:
     tags: true
