@@ -12,32 +12,6 @@
     <name>RefleKt Core</name>
     <description>Like org.reflections, hoping it will be easier to use, and faster.</description>
 
-    <licenses>
-        <license>
-            <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-    <developers>
-        <developer>
-            <name>jensim</name>
-            <url>https://github.com/jensim</url>
-        </developer>
-    </developers>
-    <organization>
-        <name>com.github.reflekt</name>
-        <url>https://github.com/reflekt/reflekt</url>
-    </organization>
-    <issueManagement>
-        <system>GitHub</system>
-        <url>https://github.com/reflekt/reflekt/issues</url>
-    </issueManagement>
-    <scm>
-        <url>https://github.com/reflekt/reflekt</url>
-        <connection>scm:git:git://github.com:reflekt/reflekt.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:reflekt/reflekt.git</developerConnection>
-    </scm>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
