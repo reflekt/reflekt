@@ -16,22 +16,36 @@ I use it in testing all the time, I've even used it in production once or twice.
 
 Im doing this for fun, and maybe there will be someone else who has similar needs as mine.
 
-Therefore, my goals are:
+## Mission:
 - Thread and concurrency safe
 - Lazy init of all class discovery and analysis
 - Zero dependencies
 - Simple construction
 - Easy to test/mock
 - Works with jigsaw out of the box
+- Works well with Java and Kotlin
+- Nice syntax
 
+## Dependency management:
+#### Maven dependency:
 ````xml
+<!-- Using maven -->
 <dependency>
     <groupId>io.github.reflekt</groupId>
     <artifactId>reflekt-core</artifactId>
     <version>${reflekt.version}</version>
+    <scope>test</scope> <!-- Think twice before using reflection libs in prod -->
 </dependency>
 ````
 
+#### Gradle:
+```build.gradle
+dependencies {
+    testImplementation("io.github.reflekt:reflekt-core:${reflekt.version}")
+}
+```
+
+## Usage:
 ```java
 import static io.github.reflekt.ReflektBuilder.reflekt;
 import static io.github.reflekt.ReflektConf;
@@ -45,7 +59,7 @@ ReflektConf conf = ReflektConf.builder()
 r = reflekt(conf); 
 ```
 
-## Skipped features
+## Skipped features of org.reflections
 In my very opinionated opinion, these methods do not belong/are not needed in a slim reflection library, and are therefore left out.
 - getResources
 - getMethodParamNames
