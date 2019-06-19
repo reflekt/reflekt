@@ -41,6 +41,7 @@ Im doing this for fun, and maybe there will be someone else who has similar need
 #### Gradle:
 ```build.gradle
 dependencies {
+    // Think twice before using reflection libs in prod
     testImplementation("io.github.reflekt:reflekt-core:${reflekt.version}")
 }
 ```
