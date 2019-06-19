@@ -1,17 +1,17 @@
 package com.example;
 
+import static io.github.reflekt.ReflektBuilder.reflekt;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.reflekt.ReflektBuilder.reflekt;
 
 import java.util.Set;
 
+import io.github.reflekt.Reflekt;
 import org.junit.Test;
-import org.reflekt.Reflekt;
 
 public class ReflektTest {
 

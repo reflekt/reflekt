@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://img.shields.io/badge/Repo%20status-Work%20in%20progress-yellow.svg)](https://www.repostatus.org/#wip)
 [![Build Status](https://travis-ci.org/reflekt/reflekt.svg?branch=master)](https://travis-ci.org/reflekt/reflekt)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=org.reflekt%3Areflekt-parent&metric=coverage)](https://sonarcloud.io/dashboard?id=org.reflekt%3Areflekt-parent)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=io.github.reflekt%3Areflekt-parent&metric=coverage)](https://sonarcloud.io/dashboard?id=io.github.reflekt%3Areflekt-parent)
 
 I bloody love [org.reflections](https://github.com/ronmamo/reflections). 
 I use it in testing all the time, I've even used it in production once or twice. 
@@ -24,9 +24,17 @@ Therefore, my goals are:
 - Easy to test/mock
 - Works with jigsaw out of the box
 
+````xml
+<dependency>
+    <groupId>io.github.reflekt</groupId>
+    <artifactId>reflekt-core</artifactId>
+    <version>${reflekt.version}</version>
+</dependency>
+````
+
 ```java
-import static org.reflekt.ReflektBuilder.reflekt;
-import static org.reflekt.ReflektConf;
+import static io.github.reflekt.ReflektBuilder.reflekt;
+import static io.github.reflekt.ReflektConf;
 RefleKt r = reflekt(); //For all class files found in jar or classpath
 r = reflekt("com.example"); //Ristrict package prefix to "com.example"
 ReflektConf conf = ReflektConf.builder()
