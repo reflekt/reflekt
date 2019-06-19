@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.github.reflekt</groupId>
         <artifactId>reflekt-parent</artifactId>
-        <version>1.0.4-SNAPSHOT</version>
+        <version>1.0.5-SNAPSHOT</version>
     </parent>
     <artifactId>example-parent</artifactId>
     <packaging>pom</packaging>
