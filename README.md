@@ -36,3 +36,12 @@ ReflektConf conf = ReflektConf.builder()
     .build();
 r = reflekt(conf); 
 ```
+
+## Skipped features
+In my very opinionated opinion, these methods do not belong/are not needed in a slim reflection library, and are therefore left out.
+- getResources
+- getMethodParamNames
+- getConstructorParamNames
+- getFieldUsage
+- getMethodUsage
+- getConstructorUsage
