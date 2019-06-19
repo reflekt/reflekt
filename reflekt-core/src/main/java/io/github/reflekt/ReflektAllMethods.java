@@ -5,5 +5,9 @@ import java.util.Set;
 
 public interface ReflektAllMethods {
 
+    /**
+     * Returns all methods
+     * @return all methods
+     */
     Set<Method> getAllMethods();
 }

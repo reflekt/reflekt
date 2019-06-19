@@ -6,7 +6,7 @@ public interface ClassFileLocator {
 
     /**
      * Returns class references ready to load with Class#forName
-     * @param includeNestedJars
+     * @param includeNestedJars weather or not to look in nested jars for class files
      * @return class references ready to load with Class#forName(String)
      * @see Class#forName(String)
      */

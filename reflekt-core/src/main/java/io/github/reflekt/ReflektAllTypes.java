@@ -5,7 +5,9 @@ import java.util.Set;
 public interface ReflektAllTypes {
 
     /**
-     * Never null.
+     * Returns all types, can be used with Class#forName(String)
+     * @return all types
+     * @see Class#forName(String)
      */
     Set<String> getAllTypes();
 }

@@ -23,6 +23,7 @@ public class ReflektConf {
 
     /**
      * Filter the class files found according to this filter, it is used as a starts-with expression
+     * @return a starts-with expression for filtering classes
      */
     public String getPackageFilter() {
         return packageFilter;
@@ -30,6 +31,7 @@ public class ReflektConf {
 
     /**
      * Do deep scan into nested jars
+     * @return do deep scan into nested jars
      */
     public boolean isIncludeNestedJars() {
         return includeNestedJars;
@@ -37,6 +39,7 @@ public class ReflektConf {
 
     /**
      * Want to implement your own class file locator, pass it in the conf.
+     * @return all extra ClassFileLocators
      */
     public List<Supplier<ClassFileLocator>> getExtraClassFileLocators() {
         return extraClassFileLocators;
@@ -52,7 +55,10 @@ public class ReflektConf {
         }
 
         /**
-         * Filter the class files found according to this filter, it is used as a starts-with expression
+         * Filter the class files found according to this filter, it is used as a starts-with expression.
+         * This vastly improves performance.
+         * @return the builder
+         * @param packageFilter a starts-with expression for filtering classes found
          */
         public Builder setPackageFilter(String packageFilter) {
             this.packageFilter = Objects.requireNonNull(packageFilter);
@@ -61,6 +67,8 @@ public class ReflektConf {
 
         /**
          * Do deep scan into nested jars
+         * @return the builder
+         * @param includeNestedJars go through nested jars looking for class files
          */
         public Builder setIncludeNestedJars(boolean includeNestedJars) {
             this.includeNestedJars = includeNestedJars;
@@ -69,6 +77,10 @@ public class ReflektConf {
 
         /**
          * Want to implement your own class file locator, pass it in the conf.
+         * @return the builder
+         * @param extraClassFileLocators extra ClassFileLocators to use in Reflekt
+         * @see io.github.reflekt.Reflekt
+         * @see io.github.reflekt.ClassFileLocator
          */
         public Builder setExtraClassFileLocators(List<Supplier<ClassFileLocator>> extraClassFileLocators) {
             this.extraClassFileLocators = Objects.requireNonNull(extraClassFileLocators);
