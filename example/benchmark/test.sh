@@ -2,7 +2,7 @@
 
 echo "Building Example project with benchmarks"
 
-JAR="reflekt-benchmark-1.0-SNAPSHOT-jar-with-dependencies.jar"
+JAR="reflekt-benchmark-1.0.0-SNAPSHOT-jar-with-dependencies.jar"
 MAIN="com.example.Main"
 
 cd target
