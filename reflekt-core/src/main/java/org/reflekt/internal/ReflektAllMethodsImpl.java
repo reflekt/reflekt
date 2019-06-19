@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import se.jensim.reflekt.ReflektAllMethods;
+import org.reflekt.ReflektAllMethods;
 
 public class ReflektAllMethodsImpl implements ReflektAllMethods {
 

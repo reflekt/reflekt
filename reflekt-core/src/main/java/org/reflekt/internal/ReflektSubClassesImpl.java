@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import se.jensim.reflekt.ReflektSubClasses;
+import org.reflekt.ReflektSubClasses;
 
 class ReflektSubClassesImpl implements ReflektSubClasses {
 

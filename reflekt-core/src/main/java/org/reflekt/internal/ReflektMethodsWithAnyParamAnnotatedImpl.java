@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import se.jensim.reflekt.ReflektAllMethods;
-import se.jensim.reflekt.ReflektMethodsWithAnyParamAnnotated;
+import org.reflekt.ReflektAllMethods;
+import org.reflekt.ReflektMethodsWithAnyParamAnnotated;
 
 class ReflektMethodsWithAnyParamAnnotatedImpl extends ReflektAbstractAnyParamAnnotated<Method> implements ReflektMethodsWithAnyParamAnnotated {
 

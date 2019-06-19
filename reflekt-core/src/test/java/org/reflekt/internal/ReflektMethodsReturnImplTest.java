@@ -8,8 +8,8 @@ import static org.mockito.Mockito.when;
 import java.util.Set;
 
 import org.junit.Test;
-import se.jensim.reflekt.ReflektAllMethods;
-import se.jensim.reflekt.ReflektMethodsReturn;
+import org.reflekt.ReflektAllMethods;
+import org.reflekt.ReflektMethodsReturn;
 
 @SuppressWarnings("unused")
 public class ReflektMethodsReturnImplTest {

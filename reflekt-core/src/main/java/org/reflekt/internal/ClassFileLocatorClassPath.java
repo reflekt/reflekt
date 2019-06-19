@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import se.jensim.reflekt.ClassFileLocator;
-import se.jensim.reflekt.ReflektConf;
+import org.reflekt.ClassFileLocator;
+import org.reflekt.ReflektConf;
 
 public class ClassFileLocatorClassPath implements ClassFileLocator {
 

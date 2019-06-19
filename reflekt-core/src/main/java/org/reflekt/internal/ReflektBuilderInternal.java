@@ -4,23 +4,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
-import se.jensim.reflekt.ClassFileLocator;
-import se.jensim.reflekt.Reflekt;
-import se.jensim.reflekt.ReflektAllConstructors;
-import se.jensim.reflekt.ReflektAllFields;
-import se.jensim.reflekt.ReflektAllMethods;
-import se.jensim.reflekt.ReflektAllTypes;
-import se.jensim.reflekt.ReflektClassesAnnotatedWith;
-import se.jensim.reflekt.ReflektConf;
-import se.jensim.reflekt.ReflektConstructorsAnnotatedWith;
-import se.jensim.reflekt.ReflektConstructorsMatchParams;
-import se.jensim.reflekt.ReflektConstructorsWithAnyParamAnnotated;
-import se.jensim.reflekt.ReflektFieldsAnnotatedWith;
-import se.jensim.reflekt.ReflektMethodsAnnotatedWith;
-import se.jensim.reflekt.ReflektMethodsMatchParams;
-import se.jensim.reflekt.ReflektMethodsReturn;
-import se.jensim.reflekt.ReflektMethodsWithAnyParamAnnotated;
-import se.jensim.reflekt.ReflektSubClasses;
+import org.reflekt.ClassFileLocator;
+import org.reflekt.Reflekt;
+import org.reflekt.ReflektAllConstructors;
+import org.reflekt.ReflektAllFields;
+import org.reflekt.ReflektAllMethods;
+import org.reflekt.ReflektAllTypes;
+import org.reflekt.ReflektClassesAnnotatedWith;
+import org.reflekt.ReflektConf;
+import org.reflekt.ReflektConstructorsAnnotatedWith;
+import org.reflekt.ReflektConstructorsMatchParams;
+import org.reflekt.ReflektConstructorsWithAnyParamAnnotated;
+import org.reflekt.ReflektFieldsAnnotatedWith;
+import org.reflekt.ReflektMethodsAnnotatedWith;
+import org.reflekt.ReflektMethodsMatchParams;
+import org.reflekt.ReflektMethodsReturn;
+import org.reflekt.ReflektMethodsWithAnyParamAnnotated;
+import org.reflekt.ReflektSubClasses;
 
 public interface ReflektBuilderInternal {
 

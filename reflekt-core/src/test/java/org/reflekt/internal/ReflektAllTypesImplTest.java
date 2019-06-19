@@ -11,9 +11,9 @@ import java.util.function.Supplier;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import se.jensim.reflekt.ClassFileLocator;
-import se.jensim.reflekt.ReflektAllTypes;
-import se.jensim.reflekt.ReflektConf;
+import org.reflekt.ClassFileLocator;
+import org.reflekt.ReflektAllTypes;
+import org.reflekt.ReflektConf;
 
 @SuppressWarnings("unused")
 public class ReflektAllTypesImplTest {

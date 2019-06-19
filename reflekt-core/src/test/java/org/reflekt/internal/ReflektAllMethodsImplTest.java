@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Method;
 
 import org.junit.Test;
-import se.jensim.reflekt.ReflektAllMethods;
+import org.reflekt.ReflektAllMethods;
 
 public class ReflektAllMethodsImplTest {
 

@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import java.util.Set;
 
 import org.junit.Test;
-import se.jensim.reflekt.ReflektAllTypes;
+import org.reflekt.ReflektAllTypes;
 
 public class ReflektAllClassesImplTest {
 

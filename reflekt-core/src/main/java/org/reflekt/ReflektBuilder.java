@@ -22,7 +22,7 @@ public interface ReflektBuilder {
 
     /**
      * Configure the reflekt instance according to your needs.
-     * @see se.jensim.reflekt.ReflektConf#builder()
+     * @see org.reflekt.ReflektConf#builder()
      */
     static Reflekt reflekt(ReflektConf conf) {
         return ReflektBuilderInternal.reflekt(conf);

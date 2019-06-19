@@ -10,7 +10,7 @@ import java.util.Set;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import se.jensim.reflekt.ReflektConf;
+import org.reflekt.ReflektConf;
 
 public class ClassFileLocatorClassPathTest {
 
@@ -20,7 +20,7 @@ public class ClassFileLocatorClassPathTest {
     @Test
     public void getClasses() {
         // given
-        ReflektConf conf = ReflektConf.builder().setPackageFilter("se.jensim.reflekt").build();
+        ReflektConf conf = ReflektConf.builder().setPackageFilter("org.reflekt").build();
         ClassFileLocatorClassPath target = new ClassFileLocatorClassPath(conf);
 
         // when
@@ -33,7 +33,7 @@ public class ClassFileLocatorClassPathTest {
     @Test
     public void unableToGetStackOverflowFromDeepPackages() throws IOException {
         // given
-        ReflektConf conf = ReflektConf.builder().setPackageFilter("se.jensim.reflekt").build();
+        ReflektConf conf = ReflektConf.builder().setPackageFilter("org.reflekt").build();
         ClassFileLocatorClassPath target = new ClassFileLocatorClassPath(conf);
         String classfile = createDeepDir();
 
@@ -53,7 +53,7 @@ public class ClassFileLocatorClassPathTest {
         for (int i = 0; i < 4; i++) {
             alphabeth += alphabeth;
         }
-        alphabeth = "se.jensim.reflekt." + alphabeth;
+        alphabeth = "org.reflekt." + alphabeth;
         String[] a = alphabeth.split("\\.");
         try {
             tmp.newFolder(a);

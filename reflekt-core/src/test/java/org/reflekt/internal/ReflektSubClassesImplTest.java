@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import se.jensim.reflekt.ReflektSubClasses;
+import org.reflekt.ReflektSubClasses;
 
 public class ReflektSubClassesImplTest {
 

@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.Set;
 
 import org.junit.Test;
-import se.jensim.reflekt.ReflektAllConstructors;
-import se.jensim.reflekt.ReflektConstructorsAnnotatedWith;
+import org.reflekt.ReflektAllConstructors;
+import org.reflekt.ReflektConstructorsAnnotatedWith;
 
 public class ReflektConstructorsAnnotatedWithImplTest {
 

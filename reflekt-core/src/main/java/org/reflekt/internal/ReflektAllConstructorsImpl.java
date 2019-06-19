@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import se.jensim.reflekt.ReflektAllConstructors;
+import org.reflekt.ReflektAllConstructors;
 
 public class ReflektAllConstructorsImpl implements ReflektAllConstructors {
 

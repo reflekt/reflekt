@@ -24,7 +24,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import org.reflekt.ClassFileLocator;
-import se.jensim.reflekt.ReflektConf;
+import org.reflekt.ReflektConf;
 
 class ClassFileLocatorJar implements ClassFileLocator {
 

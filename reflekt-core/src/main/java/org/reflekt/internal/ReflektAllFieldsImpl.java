@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import se.jensim.reflekt.ReflektAllFields;
+import org.reflekt.ReflektAllFields;
 
 public class ReflektAllFieldsImpl implements ReflektAllFields {
 

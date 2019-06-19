@@ -13,8 +13,8 @@ import java.util.Set;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import se.jensim.reflekt.ReflektAllFields;
-import se.jensim.reflekt.ReflektFieldsAnnotatedWith;
+import org.reflekt.ReflektAllFields;
+import org.reflekt.ReflektFieldsAnnotatedWith;
 
 @SuppressWarnings("unused")
 public class ReflektFieldsAnnotatedWithImplTest {

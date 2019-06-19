@@ -20,7 +20,7 @@ public class ClassFileLocatorJarTest {
     @Rule
     public TemporaryFolder tmpDir = new TemporaryFolder();
 
-    private static final String PACKAGE_FILTER = "se.jensim.reflekt";
+    private static final String PACKAGE_FILTER = "org.reflekt";
     private static final String GOOD_CLASS_FILE = "/" + PACKAGE_FILTER.replace('.', '/') + "/example/test/Foo$Bar.class";
 
     @Test
@@ -39,6 +39,6 @@ public class ClassFileLocatorJarTest {
         Set<String> classes = ClassFileLocatorJar.getClassesFromNestedJars(file.toURI(), PACKAGE_FILTER, false);
 
         // then
-        assertThat(classes, equalTo(Collections.singleton("se.jensim.reflekt.example.test.Foo.Bar")));
+        assertThat(classes, equalTo(Collections.singleton("org.reflekt.example.test.Foo.Bar")));
     }
 }

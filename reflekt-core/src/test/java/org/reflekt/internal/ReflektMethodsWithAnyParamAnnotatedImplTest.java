@@ -12,8 +12,8 @@ import java.lang.annotation.Target;
 import java.util.Set;
 
 import org.junit.Test;
-import se.jensim.reflekt.ReflektAllMethods;
-import se.jensim.reflekt.ReflektMethodsWithAnyParamAnnotated;
+import org.reflekt.ReflektAllMethods;
+import org.reflekt.ReflektMethodsWithAnyParamAnnotated;
 
 public class ReflektMethodsWithAnyParamAnnotatedImplTest {
 
