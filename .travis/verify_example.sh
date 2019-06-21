@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
-cd example/benchmark
+pushd example/benchmark
 ./test.sh
+popd

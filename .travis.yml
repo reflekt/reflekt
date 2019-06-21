@@ -10,9 +10,10 @@ addons:
 install: false
 
 script:
+- ".travis/set_release_version.sh"
 - "./mvnw install"
-- "./mvnw -f example/pom.xml clean install"
-- "./verify_example.sh"
+- "./mvnw -f example/pom.xml install"
+- ".travis/verify_example.sh"
 - "./mvnw sonar:sonar"
 
 before_deploy:
