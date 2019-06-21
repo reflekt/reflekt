@@ -24,7 +24,6 @@
 
     <modules>
         <module>reflekt-core</module>
-        <module>example</module>
     </modules>
 
     <licenses>

@@ -11,6 +11,7 @@ install: false
 
 script:
 - "./mvnw install"
+- "./mvnw -f example/pom.xml clean install"
 - "./verify_example.sh"
 - "./mvnw sonar:sonar"
 
