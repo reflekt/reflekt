@@ -3,7 +3,7 @@
 
     <groupId>io.github.reflekt</groupId>
     <artifactId>reflekt-parent</artifactId>
-    <version>1.0.7-SNAPSHOT</version>
+    <version>1.0.8-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>RefleKt Parent</name>
