@@ -8,6 +8,7 @@
     </parent>
     <name>RefleKt Examples</name>
     <artifactId>example-parent</artifactId>
+  <version>1.0.9-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
