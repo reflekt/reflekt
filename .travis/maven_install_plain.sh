@@ -4,7 +4,9 @@ set -e
 
 echo "BUILDING PLAIN"
 
-set -v
-
 mvn install
 mvn install -f example/pom.xml
+pushd example/benchmark
+. ./test.sh
+popd
+mvn sonar:sonar
