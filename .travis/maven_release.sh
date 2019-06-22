@@ -8,5 +8,5 @@ gpg --import .travis/gpg/jens.brimfors-public-gpg.key
 gpg --import jens.brimfors-secret-gpg.key
 gpg --import-ownertrust .travis/gpg/jens.brimfors-ownertrust-gpg.txt
 cp .travis/settings.xml $HOME/.m2/settings.xml
-./mvnw -B release:prepare
-./mvnw release:perform
+mvn -B release:prepare
+mvn release:perform
