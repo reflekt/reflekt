@@ -3,7 +3,8 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.reflekt/reflekt-core.svg)](https://search.maven.org/artifact/io.github.reflekt/reflekt-core)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Build Status](https://travis-ci.org/reflekt/reflekt.svg?branch=master)](https://travis-ci.org/reflekt/reflekt)
+![Travis (.org)](https://img.shields.io/travis/reflekt/reflekt.svg?label=Linux%20build)
+![AppVeyor](https://img.shields.io/appveyor/ci/jensim/reflekt-3gs91.svg?label=windows%20build)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=io.github.reflekt%3Areflekt-parent&metric=coverage)](https://sonarcloud.io/dashboard?id=io.github.reflekt%3Areflekt-parent)
 
 I bloody love [org.reflections](https://github.com/ronmamo/reflections). 
