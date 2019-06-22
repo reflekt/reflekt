@@ -10,3 +10,5 @@ gpg --import-ownertrust .travis/gpg/jens.brimfors-ownertrust-gpg.txt
 cp .travis/settings.xml $HOME/.m2/settings.xml
 mvn -B release:prepare
 mvn release:perform
+
+set +v
