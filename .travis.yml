@@ -9,12 +9,7 @@ addons:
 
 install: true
 
-script:
-- ". .travis/maven_set_release_version.sh"
-- "./mvnw install"
-- "./mvnw -f example/pom.xml install"
-- ". .travis/verify_example.sh"
-- "./mvnw sonar:sonar"
+script: ". .travis/maven_install.sh"
 
 deploy:
   provider: script
