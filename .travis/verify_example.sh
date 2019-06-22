@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 pushd example/benchmark
-./test.sh
+. ./test.sh
 popd
