@@ -26,7 +26,8 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
 
     private static final Logger LOG = Logger.getLogger(ClassFileLocatorClassPath.class.getCanonicalName());
 
-    private static final String CLASS_NAME_MATCHER = "^.*/([A-Za-z0-9$])*[A-Za-z0-9]+\\.class$";
+    private static final String regexSeparator = File.separator.equals("\\") ? "\\\\" : "/";
+    private static final String CLASS_NAME_MATCHER = "^.*"+regexSeparator+"([A-Za-z0-9$])*[A-Za-z0-9]+\\.class$";
     private final String packageFilter;
     private final String packageFileMatcher;
     private Map<Boolean, Set<String>> keeper = new ConcurrentHashMap<>();
@@ -43,7 +44,7 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
 
     private Set<String> initialize() {
         try {
-            Iterator<URL> urlIterator = Thread.currentThread().getContextClassLoader().getResources("./").asIterator();
+            Iterator<URL> urlIterator = Thread.currentThread().getContextClassLoader().getResources(".").asIterator();
             Stream<File> rootFiles = StreamSupport.stream(Spliterators.spliteratorUnknownSize(urlIterator, 0), true)
                     .map(u -> {
                         try {
@@ -132,8 +133,7 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
             int initalDrop = root.getAbsolutePath().length()+1;
             String trimmedStart = file.getAbsolutePath().substring(initalDrop);
             String trimmedClass = trimmedStart.substring(0, trimmedStart.length() - 6);
-            return trimmedClass.replace('/', '.')
-                    .replace(File.separatorChar, '.')
+            return trimmedClass.replace(File.separatorChar, '.')
                     .replace('$', '.');
 
         }
