@@ -10,9 +10,9 @@ build_script:
 test_script:
   - mvn test -B
   - mvn test -B -f example\pom.xml
-  - example\benchmark\test.bat
   - echo "Running Jar integration test in Java project"
   - java -cp example/java/target/reflekt-example-java-0.0.1-SNAPSHOT-jar-with-dependencies.jar com.example.IntegrationTest
+  - example\benchmark\test.bat
 cache:
   - C:\maven\
   - C:\Users\appveyor\.m2
