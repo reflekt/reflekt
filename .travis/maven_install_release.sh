@@ -12,9 +12,6 @@ git add pom.xml
 git add **/pom.xml
 git commit -m "Setting release version"
 mvn install -f example/pom.xml
-pushd example/benchmark
-./test.sh
-popd
 pushd example/java/target
-java -cp reflekt-example-java-0.0.1-SNAPSHOT-jar-with-dependencies.jar com.example.IntegrationTest
+java -cp reflekt-example-java-$1-SNAPSHOT-jar-with-dependencies.jar com.example.IntegrationTest
 popd
