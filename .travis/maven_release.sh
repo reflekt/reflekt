@@ -3,7 +3,7 @@
 set -e
 set -v
 
-openssl aes-256-cbc -K $encrypted_be6abfaeb7c9_key -iv $encrypted_be6abfaeb7c9_iv -in .travis/gpg/jens.brimfors-secret-gpg.key.enc -out jens.brimfors-secret-gpg.key -d
+openssl aes-256-cbc -K $1 -iv $2 -in .travis/gpg/jens.brimfors-secret-gpg.key.enc -out jens.brimfors-secret-gpg.key -d
 gpg --import .travis/gpg/jens.brimfors-public-gpg.key
 gpg --import jens.brimfors-secret-gpg.key
 gpg --import-ownertrust .travis/gpg/jens.brimfors-ownertrust-gpg.txt

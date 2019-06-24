@@ -13,11 +13,11 @@ cache:
 
 install: true
 
-script: ". .travis/maven_install.sh"
+script: ".travis/maven_install.sh $TRAVIS_TAG"
 
 deploy:
   provider: script
-  script: ". .travis/maven_release.sh"
+  script: ".travis/maven_release.sh $encrypted_be6abfaeb7c9_key $encrypted_be6abfaeb7c9_iv"
   skip_cleanup: true
   on:
     tags: true
