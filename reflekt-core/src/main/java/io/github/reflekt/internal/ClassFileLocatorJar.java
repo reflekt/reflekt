@@ -29,7 +29,7 @@ import io.github.reflekt.ReflektConf;
 class ClassFileLocatorJar implements ClassFileLocator {
 
     private static final Logger LOG = Logger.getLogger(ClassFileLocatorJar.class.getCanonicalName());
-    private static final String CLASS_MATCHER = "^(/[A-Za-z0-9]+)+/([A-Za-z0-9]+[$]?)*[a-z]+\\.class$";
+    private static final String CLASS_MATCHER = "^/?([A-Za-z0-9]+/)+([A-Za-z0-9]+[$]?)*[a-z]+\\.class$";
 
     private final String packageFilter;
     private final Map<Boolean, Set<String>> keeper = new ConcurrentHashMap<>();
@@ -101,7 +101,10 @@ class ClassFileLocatorJar implements ClassFileLocator {
         String replace = entry.getName()
                 .replace('/', '.')
                 .replace('$', '.');
-        return replace.substring(1, replace.length() - 6);
+        if(replace.startsWith(".")){
+            replace = replace.substring(1);
+        }
+        return replace.substring(0, replace.length() - 6);
     }
 
     private static List<ZipEntry> getNestedJarEntries(ZipFile file, ZipEntry entry) {

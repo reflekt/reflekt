@@ -28,6 +28,8 @@ public class IntegrationTest {
         if (!found) {
             System.err.println("Was unable to locate all types!\nExpected:" + expectedTypes + "\nFound:" + allTypes);
             System.exit(1);
+        } else {
+            System.out.println("OK!");
         }
     }
 
