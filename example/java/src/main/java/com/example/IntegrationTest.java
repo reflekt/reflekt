@@ -3,7 +3,6 @@ package com.example;
 import io.github.reflekt.Reflekt;
 import io.github.reflekt.ReflektBuilder;
 import io.github.reflekt.ReflektConf;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 
