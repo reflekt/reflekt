@@ -48,7 +48,7 @@ class Main {
             }.prettyPrint()
         }
 
-        fun benchMark(impl: BenchmarkReflect): Long {
+        fun benchMark(impl: BenchmarkReflect): Long? {
             val start = System.currentTimeMillis()
             val a = impl.getSubClassesOf(SuperClass::class.java)
             val b = impl.getSubClassesOf(SuperClass2::class.java)
@@ -62,32 +62,38 @@ class Main {
                 false
             }
             if (!ok) {
-                System.err.println("${impl.name} failed! a=$a b=$b")
-                //System.exit(1)
+                if (impl.doFailHard()) {
+                    System.err.println("${impl.name} failed! a=$a b=$b")
+                    System.exit(1)
+                }
+                return null
+            } else {
+                return timeTaken
             }
-            return timeTaken
         }
     }
 }
 
 fun List<BenchmarkResult>.prettyPrint() {
-    fun Double.roundTo(decimals: Int): Double = times(10 * decimals).toLong().div(10.0 * decimals)
     table().with(
             "Name" to BenchmarkResult::name,
+            "Failed" to { it -> "${it.failed}" },
             "Init" to { it -> "${it.initTime}ms" },
             "Init+First" to { it -> "${it.initAndFirst}ms" },
-            "Max" to { it -> "${it.runs.max()}ms" },
-            "Min" to { it -> "${it.runs.min()}ms" },
-            "Avg" to { it -> "${it.runs.average().roundTo(2)}ms" }
+            "Max" to { it -> "${it.max}ms" },
+            "Min" to { it -> "${it.min}ms" },
+            "Avg" to { it -> "${it.avg}ms" }
     ).println()
     println("=================================================")
 }
 
-data class BenchmarkResult(val name: String, val initTime: Long, val runs: List<Long>) {
-    val initAndFirst = initTime + runs[0]
-    val max = runs.max()!!
-    val min = runs.min()!!
-    val avg = runs.average().toLong()
+data class BenchmarkResult(val name: String, val initTime: Long, val runs: List<Long?>) {
+    val initAndFirst = runs[0]?.let { "${it + initTime} " } ?: "-"
+    val failed = runs.size - runs.filterNotNull().size
+    val max = runs.filterNotNull().max()?.toString() ?: "-"
+    val min = runs.filterNotNull().min()?.toString() ?: "-"
+    val avg = runs.filterNotNull().average().roundTo(2)
+    fun Double.roundTo(decimals: Int): Double = times(10 * decimals).toLong().div(10.0 * decimals)
 }
 
 class LeafClass : SuperClass()
@@ -99,6 +105,7 @@ abstract class BenchmarkReflect(pkgScope: String) {
     abstract val name: String
     abstract fun getSubClassesOf(clazz: Class<*>): Set<Class<*>>
     abstract fun getAnnotatedWith(clazz: Class<out Annotation>): Set<Class<*>>
+    abstract fun doFailHard(): Boolean
 }
 
 class RefleKtBenchmark(pkgScope: String) : BenchmarkReflect(pkgScope) {
@@ -106,6 +113,7 @@ class RefleKtBenchmark(pkgScope: String) : BenchmarkReflect(pkgScope) {
     private val refleKt: Reflekt = this.pkg?.let { reflekt(it) } ?: reflekt()
     override fun getSubClassesOf(clazz: Class<*>): Set<Class<*>> = refleKt.getSubClasses(clazz)
     override fun getAnnotatedWith(clazz: Class<out Annotation>): Set<Class<*>> = refleKt.getClassesAnnotatedWith(clazz)
+    override fun doFailHard(): Boolean = true
 }
 
 class OrgReflectionsBenchmark(pkgScope: String) : BenchmarkReflect(pkgScope) {
@@ -113,4 +121,5 @@ class OrgReflectionsBenchmark(pkgScope: String) : BenchmarkReflect(pkgScope) {
     private val reflections: Reflections = this.pkg?.let { Reflections(it) } ?: Reflections()
     override fun getSubClassesOf(clazz: Class<*>): Set<Class<*>> = reflections.getSubTypesOf(clazz)
     override fun getAnnotatedWith(clazz: Class<out Annotation>): Set<Class<*>> = reflections.getTypesAnnotatedWith(clazz)
+    override fun doFailHard(): Boolean = false
 }
