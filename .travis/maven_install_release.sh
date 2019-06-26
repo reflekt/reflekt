@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+set -v
 
 echo "BUILDING RELEASE TAG $1"
 

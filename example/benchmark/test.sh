@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -e
 echo "Building Example project with benchmarks"
 
 pushd target
