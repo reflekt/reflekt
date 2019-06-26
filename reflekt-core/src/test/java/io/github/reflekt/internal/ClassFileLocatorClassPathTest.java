@@ -76,7 +76,7 @@ public class ClassFileLocatorClassPathTest {
         String className = "PrettyPlease";
         String clazz = String.join(".", pkg) + "." + className + ".class";
         tmp.newFolder(pkg);
-        String fileRef = String.join("/", pkg) + "/" + className + ".class";
+        String fileRef = String.join(File.separator, pkg) + File.separator + className + ".class";
         tmp.newFile(fileRef);
         ReflektConf conf = ReflektConf.builder().setClassResourceDirs(List.of(tmp.getRoot().getPath())).build();
         Reflekt reflekt = reflekt(conf);
