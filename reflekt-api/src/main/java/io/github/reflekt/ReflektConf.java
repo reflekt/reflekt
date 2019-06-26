@@ -10,11 +10,13 @@ public class ReflektConf {
     private final String packageFilter;
     private final boolean includeNestedJars;
     private final List<Supplier<ClassFileLocator>> extraClassFileLocators;
+    private final List<String> classResourceDirs;
 
     private ReflektConf(Builder builder) {
         packageFilter = builder.packageFilter;
         includeNestedJars = builder.includeNestedJars;
         extraClassFileLocators = builder.extraClassFileLocators;
+        classResourceDirs = builder.classResourceDirs;
     }
 
     public static Builder builder() {
@@ -45,8 +47,17 @@ public class ReflektConf {
         return extraClassFileLocators;
     }
 
+    /**
+     * Returns the override value (paths) to use in locating class files
+     * @return the override value (paths) to use in locating class files
+     */
+    public List<String> getClassResourceDirs() {
+        return classResourceDirs;
+    }
+
     public static class Builder {
 
+        private List<String> classResourceDirs = null;
         private String packageFilter = "";
         private boolean includeNestedJars = false;
         private List<Supplier<ClassFileLocator>> extraClassFileLocators = new ArrayList<>();
@@ -84,6 +95,16 @@ public class ReflektConf {
          */
         public Builder setExtraClassFileLocators(List<Supplier<ClassFileLocator>> extraClassFileLocators) {
             this.extraClassFileLocators = Objects.requireNonNull(extraClassFileLocators);
+            return this;
+        }
+
+        /**
+         * The override value (paths) to use in locating class files
+         * @param classResourceDirs The override value (paths) to use in locating class files
+         * @return the builder
+         */
+        public Builder setClassResourceDirs(List<String> classResourceDirs) {
+            this.classResourceDirs = classResourceDirs;
             return this;
         }
 

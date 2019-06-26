@@ -23,6 +23,7 @@
     </properties>
 
     <modules>
+        <module>reflekt-api</module>
         <module>reflekt-core</module>
     </modules>
 

@@ -31,10 +31,12 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
     private final String packageFilter;
     private final String packageFileMatcher;
     private Map<Boolean, Set<String>> keeper = new ConcurrentHashMap<>();
+    private final List<String> classResourceDirs;
 
     ClassFileLocatorClassPath(ReflektConf conf) {
         packageFilter = conf.getPackageFilter();
         packageFileMatcher = packageFilter.replace('.', File.separatorChar);
+        classResourceDirs = conf.getClassResourceDirs();
     }
 
     @Override
@@ -44,8 +46,18 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
 
     private Set<String> initialize() {
         try {
+            Stream<File> rootFiles = getRoots();
+            return initialize(rootFiles);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Was unable to get class files from classpath", e);
+        }
+        return Collections.emptySet();
+    }
+
+    private Stream<File> getRoots() throws IOException {
+        if(classResourceDirs == null){
             Iterator<URL> urlIterator = Thread.currentThread().getContextClassLoader().getResources(".").asIterator();
-            Stream<File> rootFiles = StreamSupport.stream(Spliterators.spliteratorUnknownSize(urlIterator, 0), true)
+            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(urlIterator, 0), true)
                     .map(u -> {
                         try {
                             return new File(u.toURI());
@@ -54,11 +66,9 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
                         }
                     })
                     .filter(Objects::nonNull);
-            return initialize(rootFiles);
-        } catch (IOException e) {
-            LOG.log(Level.WARNING, "Was unable to get class files from classpath", e);
+        }else{
+            return classResourceDirs.stream().map(File::new);
         }
-        return Collections.emptySet();
     }
 
     Set<String> initialize(Stream<File> rootFiles){

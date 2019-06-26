@@ -1,13 +1,16 @@
 package io.github.reflekt.internal;
 
+import static io.github.reflekt.ReflektBuilder.reflekt;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 
+import io.github.reflekt.Reflekt;
+import io.github.reflekt.ReflektConf;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-
-import io.github.reflekt.ReflektConf;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -46,6 +49,7 @@ public class ClassFileLocatorClassPathTest {
 
     /**
      * 416 levels of packages, if i counted correctly.
+     *
      * @return class name (canonical) of the created class file
      */
     private String createDeepDir() throws IOException {
@@ -63,5 +67,24 @@ public class ClassFileLocatorClassPathTest {
         String join = String.join(File.separator, a) + File.separator + "MyClass.class";
         tmp.newFile(join);
         return join.replace(File.separatorChar, '.').substring(0, join.length() - 6);
+    }
+
+    @Test
+    public void useOverridePath() throws IOException {
+        // given
+        String[] pkg = {"com", "example", "test", "find", "me", "please"};
+        String className = "PrettyPlease";
+        String clazz = String.join(".", pkg) + "." + className + ".class";
+        tmp.newFolder(pkg);
+        String fileRef = String.join("/", pkg) + "/" + className + ".class";
+        tmp.newFile(fileRef);
+        ReflektConf conf = ReflektConf.builder().setClassResourceDirs(List.of(tmp.getRoot().getPath())).build();
+        Reflekt reflekt = reflekt(conf);
+
+        // when
+        Set<String> allTypes = reflekt.getAllTypes();
+
+        // then
+        Assert.assertThat(allTypes, is(Set.of(clazz.substring(0, clazz.length() - 6))));
     }
 }
