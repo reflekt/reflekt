@@ -1,6 +1,7 @@
 package io.github.reflekt.internal;
 
 import static io.github.reflekt.ReflektBuilder.reflekt;
+import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 

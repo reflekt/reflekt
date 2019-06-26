@@ -35,7 +35,7 @@ public interface ReflektBuilderInternal {
         locatorList.addAll(conf.getExtraClassFileLocators());
 
         Supplier<ReflektAllTypes> a = LazyBuilder.lazy(() -> new ReflektAllTypesImpl(conf, locatorList));
-        Supplier<ReflektAllClasses> l = LazyBuilder.lazy(() -> new ReflektAllClassesImpl(a));
+        Supplier<ReflektAllClasses> l = LazyBuilder.lazy(() -> new ReflektAllClassesImpl(conf, a));
         Supplier<ReflektSubClasses> k = LazyBuilder.lazy(() -> new ReflektSubClassesImpl(l));
         Supplier<ReflektClassesAnnotatedWith> b = LazyBuilder.lazy(() -> new ReflektClassesAnnotatedWithImpl(l));
         Supplier<ReflektAllConstructors> m = LazyBuilder.lazy(() -> new ReflektAllConstructorsImpl(l));
