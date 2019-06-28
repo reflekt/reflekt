@@ -11,7 +11,7 @@
     <url>https://github.com/reflekt/reflekt</url>
 
     <properties>
-        <java_version>11</java_version>
+        <java_version>1.8</java_version>
         <maven.compiler.source>${java_version}</maven.compiler.source>
         <maven.compiler.target>${java_version}</maven.compiler.target>
         <!--test versions-->

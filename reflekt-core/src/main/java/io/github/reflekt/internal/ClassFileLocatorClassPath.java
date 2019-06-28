@@ -1,16 +1,22 @@
 package io.github.reflekt.internal;
 
+import static java.util.stream.Collectors.toSet;
+
+import io.github.reflekt.ClassFileLocator;
+import io.github.reflekt.ReflektConf;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -19,15 +25,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import io.github.reflekt.ClassFileLocator;
-import io.github.reflekt.ReflektConf;
-
 public class ClassFileLocatorClassPath implements ClassFileLocator {
 
     private static final Logger LOG = Logger.getLogger(ClassFileLocatorClassPath.class.getCanonicalName());
 
-    private static final String regexSeparator = File.separator.equals("\\") ? "\\\\" : "/";
-    private static final String CLASS_NAME_MATCHER = "^.*"+regexSeparator+"([A-Za-z0-9$])*[A-Za-z0-9]+\\.class$";
     private final String packageFilter;
     private final String packageFileMatcher;
     private Map<Boolean, Set<String>> keeper = new ConcurrentHashMap<>();
@@ -54,10 +55,24 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
         return Collections.emptySet();
     }
 
+    private static <T> Stream<T> asStream(Enumeration<T> e) {
+        return StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(
+                        new Iterator<T>() {
+                            public T next() {
+                                return e.nextElement();
+                            }
+
+                            public boolean hasNext() {
+                                return e.hasMoreElements();
+                            }
+                        }, Spliterator.ORDERED), false);
+    }
+
     private Stream<File> getRoots() throws IOException {
-        if(classResourceDirs == null){
-            Iterator<URL> urlIterator = Thread.currentThread().getContextClassLoader().getResources(".").asIterator();
-            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(urlIterator, 0), true)
+        if (classResourceDirs == null) {
+            Enumeration<URL> urlEnumeration = Thread.currentThread().getContextClassLoader().getResources(".");
+            return asStream(urlEnumeration)
                     .map(u -> {
                         try {
                             return new File(u.toURI());
@@ -66,18 +81,18 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
                         }
                     })
                     .filter(Objects::nonNull);
-        }else{
+        } else {
             return classResourceDirs.stream().map(File::new);
         }
     }
 
-    Set<String> initialize(Stream<File> rootFiles){
+    Set<String> initialize(Stream<File> rootFiles) {
         return rootFiles.map(FileWithRoot::new)
                 .map(this::travel)
                 .flatMap(List::stream)
                 .map(FileWithRoot::asClassRef)
                 .filter(a -> a.startsWith(packageFilter))
-                .collect(Collectors.toSet());
+                .collect(toSet());
     }
 
     private List<FileWithRoot> travel(FileWithRoot root) {
@@ -96,7 +111,7 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
                 .filter(f -> f.file.isDirectory())
                 .collect(Collectors.toList());
         List<FileWithRoot> classes = files.stream()
-                .filter(f -> isClassFile(f.file))
+                .filter(this::isClassFile)
                 .collect(Collectors.toList());
         classes.addAll(found);
         return travel(dirs, classes);
@@ -107,8 +122,8 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
         return Arrays.stream(files).map(f -> new FileWithRoot(file.root, f));
     }
 
-    private boolean isClassFile(File file) {
-        return file.isFile() && file.getPath().matches(CLASS_NAME_MATCHER);
+    private boolean isClassFile(FileWithRoot file) {
+        return file.file.isFile() && ClassFilePattern.isClassFile(file.getRelevantPath());
     }
 
     private class FileWithRoot {
@@ -124,23 +139,27 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
             this.file = file;
         }
 
+        private String getRelevantPath() {
+            return file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1);
+        }
+
         private boolean evenBother() {
-            if(packageFileMatcher.isEmpty()){
+            if (packageFileMatcher.isEmpty()) {
                 return true;
-            }else if (root.equals(file)){
+            } else if (root.equals(file)) {
                 return true;
-            }else {
-                var relevantPath = file.getAbsolutePath().substring(root.getAbsolutePath().length()+1);
-                if(relevantPath.length() < packageFileMatcher.length()){
+            } else {
+                String relevantPath = getRelevantPath();
+                if (relevantPath.length() < packageFileMatcher.length()) {
                     return relevantPath.equals(packageFileMatcher.substring(0, relevantPath.length()));
-                }else{
+                } else {
                     return relevantPath.startsWith(packageFileMatcher);
                 }
             }
         }
 
         private String asClassRef() {
-            int initalDrop = root.getAbsolutePath().length()+1;
+            int initalDrop = root.getAbsolutePath().length() + 1;
             String trimmedStart = file.getAbsolutePath().substring(initalDrop);
             String trimmedClass = trimmedStart.substring(0, trimmedStart.length() - 6);
             return trimmedClass.replace(File.separatorChar, '.')

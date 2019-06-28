@@ -8,14 +8,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Set;
-
 import io.github.reflekt.Reflekt;
+import java.util.Set;
 import org.junit.Test;
 
 public class ReflektTest {
 
-    @Test
+    @Test(timeout = 5_000L)
     public void createInstance() {
         // given
         Reflekt reflekt = reflekt();

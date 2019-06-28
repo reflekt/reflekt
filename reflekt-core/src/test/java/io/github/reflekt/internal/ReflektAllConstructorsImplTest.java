@@ -5,9 +5,10 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
-
 import io.github.reflekt.ReflektAllConstructors;
+import java.lang.reflect.Constructor;
+import java.util.Collections;
+import java.util.Set;
 import org.junit.Test;
 
 public class ReflektAllConstructorsImplTest {
@@ -21,7 +22,7 @@ public class ReflektAllConstructorsImplTest {
         when(m.getAllClasses()).thenReturn(Collections.singleton(ATestClassToDiscover.class));
 
         // when
-        var constructors = target.getAllConstructors();
+        Set<Constructor> constructors = target.getAllConstructors();
 
         // then
         assertThat(constructors, hasSize(4));

@@ -1,14 +1,17 @@
 package io.github.reflekt.internal;
 
+import static java.util.Collections.singleton;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Set;
-
 import io.github.reflekt.ReflektAllMethods;
 import io.github.reflekt.ReflektMethodsMatchParams;
-import org.hamcrest.Matchers;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.Test;
 
 @SuppressWarnings("unused")
@@ -20,13 +23,13 @@ public class ReflektMethodsMatchParamsImplTest {
     @Test
     public void testGetMethodsMatchParams() throws NoSuchMethodException {
         // given
-        when(mocka.getAllMethods()).thenReturn(Set.of(ATestClass.class.getDeclaredMethods()));
+        when(mocka.getAllMethods()).thenReturn(new HashSet<>(Arrays.asList(ATestClass.class.getDeclaredMethods())));
 
         // when
-        var result = target.getMethodsMatchParams(String.class);
+        Set<Method> result = target.getMethodsMatchParams(String.class);
 
         // then
-        assertThat(result, Matchers.is(Set.of(ATestClass.class.getDeclaredMethod("aTestMethod", String.class))));
+        assertThat(result, is(singleton(ATestClass.class.getDeclaredMethod("aTestMethod", String.class))));
     }
 
     private class ATestClass {

@@ -6,17 +6,17 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import io.github.reflekt.ReflektAllConstructors;
+import io.github.reflekt.ReflektConstructorsWithAnyParamAnnotated;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import io.github.reflekt.ReflektAllConstructors;
-import io.github.reflekt.ReflektConstructorsWithAnyParamAnnotated;
 import org.junit.Test;
 
 public class ReflektConstructorsWithAnyParamAnnotatedImplTest {
@@ -31,13 +31,13 @@ public class ReflektConstructorsWithAnyParamAnnotatedImplTest {
         when(mocka.getAllConstructors()).thenReturn(testConstructors);
 
         // when
-        var result = target.getConstructorsWithAnyParamAnnotated(AnAnnotation.class).stream()
+        Set<String> result = target.getConstructorsWithAnyParamAnnotated(AnAnnotation.class).stream()
                 .map(Constructor::getParameterTypes)
                 .map(this::join)
                 .collect(toSet());
 
         // then
-        assertThat(result, is(Set.of("[Integer, Boolean]", "[Integer, Short]")));
+        assertThat(result, is(new HashSet<>(Arrays.asList("[Integer, Boolean]", "[Integer, Short]"))));
     }
 
     private String join(Class[] clazzes){

@@ -20,8 +20,8 @@
     </properties>
 
     <modules>
-        <module>benchmark</module>
         <module>java</module>
+        <module>benchmark</module>
     </modules>
 
     <dependencyManagement>

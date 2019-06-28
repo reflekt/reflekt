@@ -7,10 +7,9 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import io.github.reflekt.ReflektAllFields;
 import java.lang.reflect.Field;
 import java.util.Set;
-
-import io.github.reflekt.ReflektAllFields;
 import org.junit.Test;
 
 public class ReflektAllFieldsImplTest {
@@ -25,11 +24,11 @@ public class ReflektAllFieldsImplTest {
         when(m.getAllClasses()).thenReturn(singleton(ReflektAllFieldsImplTest.class));
 
         // when
-        var fields = target.getAllFields()
+        Set<String> fields = target.getAllFields()
                 .stream().map(Field::getName)
                 .collect(toSet());
 
         // then
-        assertThat(fields, equalTo(Set.of("aStringToFind")));
+        assertThat(fields, equalTo(singleton("aStringToFind")));
     }
 }

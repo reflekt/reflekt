@@ -5,6 +5,7 @@ import io.github.reflekt.ReflektBuilder;
 import io.github.reflekt.ReflektConf;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class IntegrationTest {
 
@@ -15,7 +16,7 @@ public class IntegrationTest {
                 .setPackageFilter("com.example")
                 .build();
         Reflekt reflekt = ReflektBuilder.reflekt(conf);
-        Set<String> expectedTypes = Set.of(MyInnerClass.class, MyOuterClass.class).stream()
+        Set<String> expectedTypes = Stream.of(MyInnerClass.class, MyOuterClass.class)
                 .map(Class::getCanonicalName)
                 .collect(Collectors.toSet());
 
@@ -23,7 +24,7 @@ public class IntegrationTest {
         Set<String> allTypes = reflekt.getAllTypes();
 
         // then
-        var found = allTypes.containsAll(expectedTypes);
+        boolean found = allTypes.containsAll(expectedTypes);
         if (!found) {
             System.err.println("Was unable to locate all types!\nExpected:" + expectedTypes + "\nFound:" + allTypes);
             System.exit(1);

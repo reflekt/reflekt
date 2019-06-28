@@ -2,9 +2,12 @@ package io.github.reflekt.internal;
 
 import static io.github.reflekt.ReflektBuilder.reflekt;
 import static io.github.reflekt.internal.LazyBuilder.lazy;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -12,15 +15,11 @@ import static org.mockito.Mockito.when;
 import io.github.reflekt.Reflekt;
 import io.github.reflekt.ReflektAllTypes;
 import io.github.reflekt.ReflektConf;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.junit.Assert;
@@ -42,8 +41,10 @@ public class ReflektAllClassesImplTest {
     @Before
     public void setUp() {
         Mockito.reset(mocka);
+        List<String> list = new ArrayList<>();
+        list.add(tmp.getRoot().getPath());
         conf = ReflektConf.builder()
-                .setClassResourceDirs(List.of(tmp.getRoot().getPath()))
+                .setClassResourceDirs(list)
                 .build();
         target = new ReflektAllClassesImpl(conf, lazy(() -> mocka));
     }
@@ -51,26 +52,30 @@ public class ReflektAllClassesImplTest {
     @Test
     public void getAllClasses() {
         // given
-        when(mocka.getAllTypes()).thenReturn(Set.of(this.getClass().getCanonicalName()));
+        Set<String> set = singleton(this.getClass().getCanonicalName());
+        when(mocka.getAllTypes()).thenReturn(set);
 
         // when
-        var allClasses = target.getAllClasses();
+        Set<Class> allClasses = target.getAllClasses();
 
         // then
-        assertThat(allClasses, equalTo(Set.of(this.getClass())));
+        assertThat(allClasses, equalTo(singleton(this.getClass())));
     }
 
     @Test
     public void useOverridePath() throws Exception {
         // given
         String[] pkg = {"com", "example"};
-        String className = "HelloWorld";
+        String className = "FindMe";
         String clazz = String.join(".", pkg) + "." + className + ".class";
         File newFolder = tmp.newFolder(pkg);
-        String fileRef = String.join(File.separator, pkg) + File.separator + className + ".class";
-        URL resource = this.getClass().getClassLoader().getResource("HelloWorld.class");
-        Files.copy(Path.of(resource.toURI()), new File(newFolder, "HelloWorld.class").toPath());
-        ReflektConf conf = ReflektConf.builder().setClassResourceDirs(List.of(tmp.getRoot().getPath())).build();
+        URL resource = this.getClass().getClassLoader().getResource("FindMe.class");
+        assertNotNull(resource);
+        Path fileResource = new File(resource.toURI()).toPath();
+        Files.copy(fileResource, new File(newFolder, "FindMe.class").toPath());
+        ReflektConf conf = ReflektConf.builder()
+                .setClassResourceDirs(singletonList(tmp.getRoot().getPath()))
+                .build();
         Reflekt reflekt = reflekt(conf);
 
         // when
@@ -79,6 +84,6 @@ public class ReflektAllClassesImplTest {
                 .collect(toSet());
 
         // then
-        Assert.assertThat(allTypes, is(Set.of(clazz.substring(0, clazz.length() - 6))));
+        Assert.assertThat(allTypes, is(singleton(clazz.substring(0, clazz.length() - 6))));
     }
 }

@@ -32,7 +32,7 @@ class ReflektAllClassesImpl implements ReflektAllClasses {
     }
 
     private Set<Class> init() {
-        var allTypes = reflektAllTypes.get().getAllTypes();
+        Set<String> allTypes = reflektAllTypes.get().getAllTypes();
         if(classLoader == null){
             if (conf.getClassResourceDirs() != null) {
                 URL[] urls = conf.getClassResourceDirs().stream().map(File::new).map(File::toURI).map(this::toUrl).toArray(URL[]::new);
@@ -58,7 +58,6 @@ class ReflektAllClassesImpl implements ReflektAllClasses {
         try {
             return uri.toURL();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
             return null;
         }
     }

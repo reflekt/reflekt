@@ -6,9 +6,9 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Method;
-
 import io.github.reflekt.ReflektAllMethods;
+import java.lang.reflect.Method;
+import java.util.Set;
 import org.junit.Test;
 
 public class ReflektAllMethodsImplTest {
@@ -22,7 +22,7 @@ public class ReflektAllMethodsImplTest {
         when(m.getAllClasses()).thenReturn(singleton(ReflektAllMethodsImplTest.class));
 
         // when
-        var fields = target.getAllMethods()
+        Set<String> fields = target.getAllMethods()
                 .stream().map(Method::getName)
                 .collect(toSet());
 

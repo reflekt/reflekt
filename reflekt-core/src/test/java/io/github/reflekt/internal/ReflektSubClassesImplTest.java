@@ -1,13 +1,15 @@
 package io.github.reflekt.internal;
 
+import static java.util.Collections.singleton;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Set;
-
 import io.github.reflekt.ReflektSubClasses;
-import org.hamcrest.Matchers;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.Test;
 
 public class ReflektSubClassesImplTest {
@@ -18,25 +20,25 @@ public class ReflektSubClassesImplTest {
     @Test
     public void testGetSubClassesOfObject() {
         // given
-        when(mocka.getAllClasses()).thenReturn(Set.of(AnAwesomeClass.class, ASuperClass.class));
+        when(mocka.getAllClasses()).thenReturn(new HashSet<>(Arrays.asList(AnAwesomeClass.class, ASuperClass.class)));
 
         // when
-        var result = target.getSubClasses(Object.class);
+        Set<Class> result = target.getSubClasses(Object.class);
 
         // then
-        assertThat(result, Matchers.is(Set.of(AnAwesomeClass.class, ASuperClass.class)));
+        assertThat(result, is(new HashSet<>(Arrays.asList(AnAwesomeClass.class, ASuperClass.class))));
     }
 
     @Test
     public void testGetSubClassesOfMiddle() {
         // given
-        when(mocka.getAllClasses()).thenReturn(Set.of(AnAwesomeClass.class, ASuperClass.class, AStupidInterface.class));
+        when(mocka.getAllClasses()).thenReturn(new HashSet<>(Arrays.asList(AnAwesomeClass.class, ASuperClass.class, AStupidInterface.class)));
 
         // when
-        var result = target.getSubClasses(ASuperClass.class);
+        Set<Class> result = target.getSubClasses(ASuperClass.class);
 
         // then
-        assertThat(result, Matchers.is(Set.of(AnAwesomeClass.class)));
+        assertThat(result, is(singleton(AnAwesomeClass.class)));
     }
 
 

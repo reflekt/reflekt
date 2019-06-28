@@ -1,7 +1,8 @@
 package io.github.reflekt.internal;
 
 import static io.github.reflekt.ReflektBuilder.reflekt;
-import static java.util.stream.Collectors.toSet;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 
@@ -9,8 +10,8 @@ import io.github.reflekt.Reflekt;
 import io.github.reflekt.ReflektConf;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class ClassFileLocatorClassPathTest {
         String classfile = createDeepDir();
 
         // when
-        var result = target.initialize(List.of(tmp.getRoot()).stream());
+        Set<String> result = target.initialize(Stream.of(tmp.getRoot()));
 
         // then
         assertTrue(result.contains(classfile));
@@ -79,13 +80,13 @@ public class ClassFileLocatorClassPathTest {
         tmp.newFolder(pkg);
         String fileRef = String.join(File.separator, pkg) + File.separator + className + ".class";
         tmp.newFile(fileRef);
-        ReflektConf conf = ReflektConf.builder().setClassResourceDirs(List.of(tmp.getRoot().getPath())).build();
+        ReflektConf conf = ReflektConf.builder().setClassResourceDirs(singletonList(tmp.getRoot().getPath())).build();
         Reflekt reflekt = reflekt(conf);
 
         // when
         Set<String> allTypes = reflekt.getAllTypes();
 
         // then
-        Assert.assertThat(allTypes, is(Set.of(clazz.substring(0, clazz.length() - 6))));
+        Assert.assertThat(allTypes, is(singleton(clazz.substring(0, clazz.length() - 6))));
     }
 }

@@ -3,6 +3,8 @@ package io.github.reflekt.internal;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 
+import io.github.reflekt.ReflektAllConstructors;
+import io.github.reflekt.ReflektConstructorsMatchParams;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,9 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import io.github.reflekt.ReflektAllConstructors;
-import io.github.reflekt.ReflektConstructorsMatchParams;
 
 class ReflektConstructorsMatchParamsImpl implements ReflektConstructorsMatchParams {
 
@@ -40,7 +39,7 @@ class ReflektConstructorsMatchParamsImpl implements ReflektConstructorsMatchPara
             return "[]";
         }
         Class declaredClass = constructor.getDeclaringClass();
-        Class host = declaredClass.getNestHost();
+        Class host = declaredClass.getEnclosingClass();
         if (!declaredClass.equals(host)) {
             parameterTypes = Arrays.copyOfRange(parameterTypes, 1, parameterTypes.length);
         }

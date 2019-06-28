@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -21,17 +20,17 @@ public class ClassFileLocatorJarTest {
     public TemporaryFolder tmpDir = new TemporaryFolder();
 
     private static final String PACKAGE_FILTER = "io.github.reflekt";
-    private static final String GOOD_CLASS_FILE = "/" + PACKAGE_FILTER.replace('.', '/') + "/example/test/Foo$Bar.class";
+    private static final String GOOD_CLASS_FILE = PACKAGE_FILTER.replace('.', '/') + "/example/test/Foo$Bar.class";
 
     @Test
     public void getClasses() throws IOException {
         // given
-        var dir = tmpDir.getRoot();
+        File dir = tmpDir.getRoot();
         File file = new File(dir, "MyJar.jar");
-        try (var os = new ZipOutputStream(new FileOutputStream(file))) {
+        try (ZipOutputStream os = new ZipOutputStream(new FileOutputStream(file))) {
             os.putNextEntry(new ZipEntry(GOOD_CLASS_FILE));
             os.write("I am a class file, i promise".getBytes());
-            os.putNextEntry(new ZipEntry("/com/example/BooFar.class"));
+            os.putNextEntry(new ZipEntry("com/example/BooFar.class"));
             os.write("I am a class file, but im not wanted".getBytes());
         }
 

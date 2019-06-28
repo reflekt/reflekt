@@ -6,13 +6,12 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import io.github.reflekt.ReflektAllConstructors;
+import io.github.reflekt.ReflektConstructorsMatchParams;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import io.github.reflekt.ReflektAllConstructors;
-import io.github.reflekt.ReflektConstructorsMatchParams;
 import org.junit.Test;
 
 public class ReflektConstructorsMatchParamsImplTest {
@@ -30,7 +29,8 @@ public class ReflektConstructorsMatchParamsImplTest {
         Set<Constructor> result = target.getConstructorsMatchParams(int.class, boolean.class);
 
         // then
-        var expected = ATestClassForMe.class.getDeclaredConstructor(this.getClass(), int.class, boolean.class);
+        //noinspection JavaReflectionMemberAccess
+        Constructor expected = ATestClassForMe.class.getDeclaredConstructor(this.getClass(), int.class, boolean.class);
         assertThat(result, hasSize(1));
         assertThat(result, contains(expected));
     }
