@@ -3,6 +3,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.reflekt/reflekt-core.svg)](https://search.maven.org/artifact/io.github.reflekt/reflekt-core)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+![JDK](https://img.shields.io/badge/JDK-%3E%3D1.8-lightgrey.svg)
 [![Travis (.org)](https://img.shields.io/travis/reflekt/reflekt.svg?label=Linux%20build)](https://travis-ci.org/reflekt/reflekt)
 [![AppVeyor](https://img.shields.io/appveyor/ci/jensim/reflekt-3gs91.svg?label=windows%20build)](https://ci.appveyor.com/project/jensim/reflekt-3gs91)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=io.github.reflekt%3Areflekt-parent&metric=coverage)](https://sonarcloud.io/dashboard?id=io.github.reflekt%3Areflekt-parent)
