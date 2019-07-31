@@ -49,7 +49,7 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
         try {
             Stream<File> rootFiles = getRoots();
             return initialize(rootFiles);
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.log(Level.WARNING, "Was unable to get class files from classpath", e);
         }
         return Collections.emptySet();

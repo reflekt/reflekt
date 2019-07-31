@@ -50,7 +50,7 @@ class ClassFileLocatorJar implements ClassFileLocator {
             return classes.stream()
                     .filter(s -> s.startsWith(packageFilter))
                     .collect(Collectors.toSet());
-        } catch (IOException e) {
+        } catch (Exception e) {
             return emptySet();
         }
     }
