@@ -91,7 +91,6 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
                 .map(this::travel)
                 .flatMap(List::stream)
                 .map(FileWithRoot::asClassRef)
-                .filter(a -> a.startsWith(packageFilter))
                 .collect(toSet());
     }
 
@@ -104,8 +103,8 @@ public class ClassFileLocatorClassPath implements ClassFileLocator {
             return found;
         }
         List<FileWithRoot> files = lookingAt.stream()
-                .filter(FileWithRoot::evenBother)
                 .flatMap(this::files)
+                .filter(FileWithRoot::evenBother)
                 .collect(Collectors.toList());
         List<FileWithRoot> dirs = files.stream()
                 .filter(f -> f.file.isDirectory())

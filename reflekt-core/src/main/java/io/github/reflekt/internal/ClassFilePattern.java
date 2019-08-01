@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 abstract class ClassFilePattern {
 
-    private static final Predicate<String> PACKAGE_DIR_MATCHER = Pattern.compile("^[a-z]+$").asPredicate();
+    private static final Predicate<String> PACKAGE_DIR_MATCHER = Pattern.compile("^[a-z][a-z0-9]*$").asPredicate();
 
     private ClassFilePattern() {
         // Im very private
